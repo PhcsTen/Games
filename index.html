@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>เมนูเกมแก้ง่วง - นักวิชาการคอมพิวเตอร์ รุ่น 5</title>
   <style>
     body {
@@ -9,6 +10,7 @@
       background: linear-gradient(to bottom, #fff4f9, #ffe2f0);
       text-align: center;
       padding: 30px;
+      margin: 0;
     }
     h1 {
       color: #ff66aa;
@@ -21,16 +23,17 @@
       margin-bottom: 30px;
     }
     .game-button {
-      display: inline-block;
+      display: block;
       background-color: #ff99cc;
       color: white;
-      padding: 15px 30px;
-      margin: 15px;
+      padding: 15px 20px;
+      margin: 15px auto;
       border-radius: 20px;
       font-size: 1.2em;
       text-decoration: none;
       transition: 0.3s;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      max-width: 300px;
     }
     .game-button:hover {
       background-color: #ff66aa;
@@ -40,6 +43,20 @@
       margin-top: 50px;
       font-size: 0.9em;
       color: #999;
+    }
+
+    /* สำหรับหน้าจอขนาดเล็ก */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      h2 {
+        font-size: 1em;
+      }
+      .game-button {
+        font-size: 1em;
+        padding: 12px 16px;
+      }
     }
   </style>
 </head>
