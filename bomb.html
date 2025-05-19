@@ -2,101 +2,128 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>เกมวางระเบิด</title>
+  <title>เกมวางระเบิด (Minesweeper)</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Prompt', sans-serif;
+      background-color: #fce4ec;
       text-align: center;
-      background: #f2f2f2;
+      padding: 20px;
     }
     h1 {
-      margin-top: 20px;
+      color: #e91e63;
     }
-    #board {
+    .board {
       display: grid;
-      grid-template-columns: repeat(8, 40px);
-      gap: 5px;
+      grid-template-columns: repeat(10, 30px);
+      grid-gap: 2px;
       justify-content: center;
       margin-top: 20px;
     }
     .cell {
-      width: 40px;
-      height: 40px;
-      background-color: #ccc;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      background-color: #f8bbd0;
+      border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
+      line-height: 30px;
     }
-    .bomb {
-      background-color: red;
+    .cell.revealed {
+      background-color: #fff;
+      cursor: default;
+    }
+    .cell.bomb {
+      background-color: #f44336;
       color: white;
-    }
-    .safe {
-      background-color: lightgreen;
     }
   </style>
 </head>
 <body>
+
   <h1>💣 เกมวางระเบิด</h1>
-  <p>หลีกเลี่ยงระเบิด! คลิกที่ช่องเพื่อเปิด</p>
-  <div id="board"></div>
+  <p>นักวิชาการคอมพิวเตอร์ รุ่น 5</p>
+
+  <div class="board" id="board"></div>
 
   <script>
-    const board = document.getElementById('board');
-    const rows = 8;
-    const cols = 8;
+    const boardSize = 10;
     const bombCount = 10;
-    let bombPositions = [];
+    const board = document.getElementById('board');
+    let cells = [];
 
-    function initGame() {
-      board.innerHTML = '';
-      bombPositions = [];
+    function createBoard() {
+      const bombs = Array(bombCount).fill('💣');
+      const empty = Array(boardSize * boardSize - bombCount).fill('');
+      const gameArray = [...bombs, ...empty].sort(() => Math.random() - 0.5);
 
-      // สุ่มตำแหน่งระเบิด
-      while (bombPositions.length < bombCount) {
-        const index = Math.floor(Math.random() * (rows * cols));
-        if (!bombPositions.includes(index)) {
-          bombPositions.push(index);
-        }
-      }
-
-      // สร้างตาราง
-      for (let i = 0; i < rows * cols; i++) {
-        const cell = document.createElement('button');
+      for (let i = 0; i < boardSize * boardSize; i++) {
+        const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.dataset.index = i;
-        cell.addEventListener('click', () => revealCell(cell, i));
+        cell.dataset.bomb = gameArray[i] === '💣' ? 'true' : 'false';
+        cell.addEventListener('click', () => revealCell(cell));
         board.appendChild(cell);
+        cells.push(cell);
       }
     }
 
-    function revealCell(cell, index) {
-      if (bombPositions.includes(index)) {
-        cell.textContent = '💣';
+    function revealCell(cell) {
+      if (cell.classList.contains('revealed')) return;
+
+      cell.classList.add('revealed');
+      const index = parseInt(cell.dataset.index);
+      const isBomb = cell.dataset.bomb === 'true';
+
+      if (isBomb) {
         cell.classList.add('bomb');
-        revealAllBombs();
-        setTimeout(() => alert("💥 เจอระเบิด! เกมจบ"), 100);
+        cell.textContent = '💣';
+        alert('💥 ระเบิด! เกมจบแล้ว 😭');
+        revealAll();
+        return;
+      }
+
+      // แสดงจำนวนระเบิดรอบข้าง
+      const adjacent = getAdjacentCells(index);
+      const bombCount = adjacent.filter(i => cells[i].dataset.bomb === 'true').length;
+      if (bombCount > 0) {
+        cell.textContent = bombCount;
       } else {
-        cell.textContent = '✔';
-        cell.classList.add('safe');
-        cell.disabled = true;
+        adjacent.forEach(i => revealCell(cells[i]));
       }
     }
 
-    function revealAllBombs() {
-      const allCells = document.querySelectorAll('.cell');
-      allCells.forEach((cell, i) => {
-        if (bombPositions.includes(i)) {
+    function getAdjacentCells(index) {
+      const x = index % boardSize;
+      const y = Math.floor(index / boardSize);
+      const offsets = [-1, 0, 1];
+      let result = [];
+
+      offsets.forEach(dy => {
+        offsets.forEach(dx => {
+          if (dx === 0 && dy === 0) return;
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize) {
+            result.push(ny * boardSize + nx);
+          }
+        });
+      });
+
+      return result;
+    }
+
+    function revealAll() {
+      cells.forEach(cell => {
+        if (cell.dataset.bomb === 'true') {
           cell.textContent = '💣';
-          cell.classList.add('bomb');
+          cell.classList.add('revealed', 'bomb');
         }
-        cell.disabled = true;
       });
     }
 
-    // เริ่มเกม
-    initGame();
+    createBoard();
   </script>
+
 </body>
 </html>
