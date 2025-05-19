@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เกมจับคู่แก้ง่วง</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #fff0f5;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #d63384;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .card {
+      background-color: #ffb6c1;
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .card.flipped {
+      background-color: #fff;
+    }
+    .card.matched {
+      background-color: #d4edda;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 เกมจับคู่แก้ง่วง</h1>
+  <p>นักวิชาการคอมพิวเตอร์ รุ่น 5</p>
+
+  <div class="game-board" id="gameBoard"></div>
+
+  <script>
+    const emojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍓', '🍇', '🍉', '🍋', '🍍', '🥝'];
+    let shuffled = emojis.sort(() => 0.5 - Math.random());
+    const board = document.getElementById('gameBoard');
+    let flippedCards = [];
+    let matchedCount = 0;
+
+    shuffled.forEach((emoji, index) => {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.dataset.index = index;
+      card.dataset.emoji = emoji;
+      card.innerHTML = '';
+      card.addEventListener('click', () => flipCard(card));
+      board.appendChild(card);
+    });
+
+    function flipCard(card) {
+      if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
+      card.classList.add('flipped');
+      card.innerHTML = card.dataset.emoji;
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+          card1.classList.add('matched');
+          card2.classList.add('matched');
+          matchedCount += 2;
+          if (matchedCount === emojis.length) {
+            setTimeout(() => alert("🎉 ชนะแล้ว! เก่งมาก~"), 300);
+          }
+        } else {
+          setTimeout(() => {
+            card1.classList.remove('flipped');
+            card2.classList.remove('flipped');
+            card1.innerHTML = '';
+            card2.innerHTML = '';
+          }, 800);
+        }
+        flippedCards = [];
+      }
+    }
+  </script>
+
+</body>
+</html>
