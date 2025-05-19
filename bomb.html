@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>เกมส์วางระเบิด (Minesweeper)</title>
   <style>
-    * {
+    <style>* {
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
-      background: linear-gradient(to bottom, #ffe4ec, #fce4ec);
+      background-color: #f5b700;
+      /* สีเหลืองเข้ม */
       height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      color: #1a1a1a;
+      /* ข้อความเข้ม */
     }
 
     h1 {
-      color: #e91e63;
+      color: #4a2900;
+      /* น้ำตาลเข้ม */
       margin: 20px 0 5px;
     }
 
     p {
       margin: 0 0 20px;
-      color: #555;
+      color: #333333;
+      /* เทาเข้ม */
     }
 
     .board-container {
@@ -50,10 +57,12 @@
     }
 
     .cell {
-      background-color: #f8bbd0;
+      background-color: #996633;
+      /* น้ำตาลทอง */
       border-radius: 4px;
       font-size: calc(0.8vmin + 10px);
-      color: #000;
+      color: #fff4cc;
+      /* สีอ่อนตัดกับพื้น */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -62,12 +71,15 @@
     }
 
     .cell.revealed {
-      background-color: #fff;
+      background-color: #fff4cc;
+      /* สีอ่อน */
+      color: #1a1a1a;
       cursor: default;
     }
 
     .cell.bomb {
-      background-color: #f44336;
+      background-color: #cc0000;
+      /* แดงเข้ม */
       color: white;
     }
 
@@ -75,27 +87,29 @@
       display: inline-block;
       margin: 20px auto;
       padding: 10px 20px;
-      background-color: #ff80ab;
-      color: white;
+      background-color: #4a2900;
+      /* น้ำตาลเข้ม */
+      color: #fff4cc;
       text-decoration: none;
       border-radius: 25px;
       font-size: 1em;
       transition: 0.3s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     .back-button:hover {
-      background-color: #ec407a;
+      background-color: #996633;
       transform: scale(1.05);
     }
 
     .footer {
       margin: 10px;
       font-size: 0.9em;
-      color: #888;
+      color: #4d4d4d;
     }
   </style>
 </head>
+
 <body>
 
   <h1>💣 เกมส์วางระเบิด</h1>
@@ -191,4 +205,5 @@
   </script>
 
 </body>
+
 </html>
