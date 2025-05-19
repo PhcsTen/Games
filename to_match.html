@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,35 +12,45 @@
       text-align: center;
       padding: 20px;
     }
+
     h1 {
       color: #d63384;
     }
+
     .game-board {
       display: grid;
-      grid-template-columns: repeat(4, 100px);
-      grid-gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      grid-gap: 10px;
       justify-content: center;
       margin-top: 20px;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
     .card {
       background-color: #ffb6c1;
-      width: 100px;
-      height: 100px;
+      width: 70px;
+      height: 70px;
       border-radius: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2em;
+      font-size: 1.5em;
+      /* ขนาด emoji */
       cursor: pointer;
       transition: transform 0.3s;
     }
+
     .card.flipped {
       background-color: #fff;
     }
+
     .card.matched {
       background-color: #d4edda;
       cursor: default;
     }
+
     .back-button {
       display: inline-block;
       margin-top: 30px;
@@ -50,12 +61,14 @@
       border-radius: 25px;
       font-size: 1em;
       transition: 0.3s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
+
     .back-button:hover {
       background-color: #c2185b;
       transform: scale(1.05);
     }
+
     .footer {
       margin: 10px;
       font-size: 0.9em;
@@ -63,6 +76,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>🧠 เกมจับคู่แก้ง่วง</h1>
@@ -70,13 +84,13 @@
 
   <div class="game-board" id="gameBoard"></div>
 
-   <!-- ปุ่มกลับเมนูหลัก -->
-   <a href="index.html" class="back-button">🔙 กลับเมนูหลัก</a>
+  <!-- ปุ่มกลับเมนูหลัก -->
+  <a href="index.html" class="back-button">🔙 กลับเมนูหลัก</a>
 
-   <div class="footer">
+  <div class="footer">
     © 2025 นักวิชาการคอมพิวเตอร์ รุ่น 5 | เล่นคลายง่วงด้วยกันนะ!
   </div>
-  
+
   <script>
     const emojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍓', '🍇', '🍉', '🍋', '🍍', '🥝'];
     let shuffled = emojis.sort(() => 0.5 - Math.random());
@@ -123,4 +137,5 @@
   </script>
 
 </body>
+
 </html>
