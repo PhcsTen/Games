@@ -51,15 +51,16 @@
       border: 3px solid #ff99cc;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
       background-color: white;
+      position: relative;
     }
 
     .piece {
       width: 80px;
       height: 80px;
-      flex-shrink: 0;
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/JPEG_example_flower.jpg/320px-JPEG_example_flower.jpg');
       background-size: 320px 320px;
       background-repeat: no-repeat;
+      position: absolute;
       cursor: grab;
       box-sizing: border-box;
     }
@@ -72,13 +73,14 @@
 <body>
 
   <h1>🧩 เกมจิ๊กซอว์</h1>
-  <p>ลากชิ้นจิ๊กซอว์ไปวางให้ตรงตำแหน่ง</p>
+  <p>นักวิชาการคอมพิวเตอร์ รุ่น 5</p>
 
   <div class="puzzle-container" id="puzzle"></div>
 
   <script>
     const puzzle = document.getElementById('puzzle');
-    const size = 4; // 4x4 = 16 ชิ้น
+    const size = 4;
+    const pieceSize = 80;
     let pieces = [];
 
     // สร้างชิ้นจิ๊กซอว์
@@ -86,61 +88,44 @@
       for (let x = 0; x < size; x++) {
         const piece = document.createElement('div');
         piece.className = 'piece';
-        piece.style.backgroundPosition = `-${x * 80}px -${y * 80}px`;
+        piece.style.backgroundPosition = `-${x * pieceSize}px -${y * pieceSize}px`;
         piece.dataset.index = y * size + x;
+        piece.style.left = `${Math.random() * (320 - pieceSize)}px`;
+        piece.style.top = `${Math.random() * (320 - pieceSize)}px`;
+        puzzle.appendChild(piece);
         pieces.push(piece);
+        makeDraggable(piece);
       }
     }
 
-    // สุ่มชิ้นจิ๊กซอว์และแสดงบนหน้าจอ
-    pieces.sort(() => Math.random() - 0.5);
-    pieces.forEach(piece => {
-      piece.setAttribute('draggable', true);
-      addDragEvents(piece);
-      puzzle.appendChild(piece);
-    });
+    function makeDraggable(el) {
+      let offsetX, offsetY, isDragging = false;
 
-    let dragged = null;
+      el.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        el.style.zIndex = 1000;
+      });
 
-    function addDragEvents(piece) {
-      piece.setAttribute('draggable', true);
-      piece.addEventListener('dragstart', e => {
-        dragged = e.target;
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          const rect = puzzle.getBoundingClientRect();
+          el.style.left = `${e.clientX - rect.left - offsetX}px`;
+          el.style.top = `${e.clientY - rect.top - offsetY}px`;
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          el.style.zIndex = 1;
+        }
       });
     }
 
-    puzzle.addEventListener('dragover', e => {
-      e.preventDefault();
-    });
-
-    puzzle.addEventListener('drop', e => {
-      if (e.target.classList.contains('piece')) {
-        const from = dragged;
-        const to = e.target;
-
-        const fromClone = from.cloneNode(true);
-        const toClone = to.cloneNode(true);
-
-        puzzle.replaceChild(fromClone, to);
-        puzzle.replaceChild(toClone, from);
-
-        addDragEvents(fromClone);
-        addDragEvents(toClone);
-
-        checkWin();
-      }
-    });
-
-    function checkWin() {
-      const current = [...puzzle.children];
-      const correct = current.every((piece, i) => +piece.dataset.index === i);
-      if (correct) {
-        setTimeout(() => alert("🎉 ยินดีด้วย! คุณต่อจิ๊กซอว์สำเร็จ!"), 300);
-      }
-    }
-
     function goBack() {
-      window.location.href = "index.html"; // แก้ URL ให้ตรงกับหน้าเมนูของคุณ
+      window.location.href = "index.html";
     }
   </script>
 
