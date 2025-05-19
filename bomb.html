@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -44,21 +46,30 @@
       display: grid;
       width: 100%;
       height: 100%;
-      grid-template-columns: repeat(10, 1fr);
-      grid-template-rows: repeat(10, 1fr);
-      gap: 2px;
+      grid-template-columns: repeat(10, minmax(30px, 1fr));
+      /* ขยายขนาดช่อง */
+      grid-template-rows: repeat(10, minmax(30px, 1fr));
+      gap: 4px;
+      /* เพิ่มช่องว่างเล็กน้อย */
     }
 
     .cell {
       background-color: #f8bbd0;
-      border-radius: 4px;
-      font-size: calc(0.8vmin + 10px);
+      border-radius: 6px;
+      font-size: calc(1.5vmin + 10px);
+      /* เดิม 0.8vmin ปรับให้ใหญ่ขึ้น */
       color: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       user-select: none;
+      height: 100%;
+      /* ทำให้ปุ่มสูงเต็มช่อง */
+      width: 100%;
+      /* ทำให้ปุ่มกว้างเต็มช่อง */
+      padding: 10%;
+      /* เพิ่มช่องว่างในปุ่ม */
     }
 
     .cell.revealed {
@@ -81,7 +92,7 @@
       border-radius: 25px;
       font-size: 1em;
       transition: 0.3s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
 
     .back-button:hover {
@@ -96,6 +107,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>💣 เกมส์วางระเบิด</h1>
@@ -191,4 +203,5 @@
   </script>
 
 </body>
+
 </html>
