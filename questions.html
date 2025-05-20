@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,7 +47,13 @@
       background-color: #cc9900;
       transform: scale(1.05);
     }
-    
+
+    .back-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
     .answers button {
       display: block;
       margin: 8px 0;
@@ -90,6 +97,7 @@
     }
   </style>
 </head>
+
 <body>
   <h1>เกมส์สุภาษิตไทย</h1>
   <div id="quiz-container">
@@ -98,7 +106,10 @@
   </div>
   <div id="result" class="result"></div>
 
-  <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
+  <!-- ปุ่มกลับเมนูหลักแบบอยู่ตรงกลาง -->
+  <div class="back-container">
+    <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
+  </div>
 
   <div class="footer">
     © 2025 | เล่นคลายง่วงด้วยกันนะ!
@@ -125,7 +136,6 @@
     ];
 
     const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 10);
-
     let currentQuestion = 0;
     let score = 0;
 
@@ -136,10 +146,8 @@
     function loadQuestion() {
       answersEl.innerHTML = "";
       resultEl.innerHTML = "";
-
       const q = selectedQuestions[currentQuestion];
       questionEl.textContent = `ข้อ ${currentQuestion + 1}: ${q.question}`;
-
       q.answers.forEach((answer, index) => {
         const btn = document.createElement("button");
         btn.textContent = answer;
@@ -168,4 +176,5 @@
     loadQuestion();
   </script>
 </body>
+
 </html>
