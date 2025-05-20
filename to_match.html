@@ -19,25 +19,24 @@
 
     .game-board {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-      grid-gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-gap: 15px;
       justify-content: center;
       margin-top: 20px;
-      max-width: 320px;
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .card {
       background-color: #ffb6c1;
-      width: 70px;
-      height: 70px;
-      border-radius: 10px;
+      width: 100px;
+      height: 100px;
+      border-radius: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.5em;
-      /* ขนาด emoji */
+      font-size: 2.5em;
       cursor: pointer;
       transition: transform 0.3s;
     }
@@ -74,6 +73,20 @@
       font-size: 0.9em;
       color: #888;
     }
+
+    @media (max-width: 480px) {
+      .card {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5em;
+      }
+
+      .game-board {
+        max-width: 340px;
+        grid-gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      }
+    }
   </style>
 </head>
 
@@ -91,8 +104,10 @@
   </div>
 
   <script>
-    const emojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍓', '🍇', '🍉', '🍋', '🍍', '🥝'];
+    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍑', '🍒', '🍈', '🍏', '🥭', '🫐', '🥑', '🥕'];
+    const emojis = [...baseEmojis, ...baseEmojis]; // สร้างคู่ทั้งหมด
     let shuffled = emojis.sort(() => 0.5 - Math.random());
+
     const board = document.getElementById('gameBoard');
     let flippedCards = [];
     let matchedCount = 0;
@@ -120,7 +135,7 @@
           card2.classList.add('matched');
           matchedCount += 2;
           if (matchedCount === emojis.length) {
-            setTimeout(() => alert("🎉 ชนะแล้ว! เก่งมาก~"), 300);
+            setTimeout(() => alert("🎉 ชนะแล้ว! สุดยอดเลย!"), 300);
           }
         } else {
           setTimeout(() => {
