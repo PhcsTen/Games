@@ -27,11 +27,6 @@
       margin: 20px 0 5px;
     }
 
-    p {
-      margin: 0 0 20px;
-      color: #555;
-    }
-
     .board-container {
       flex: 1;
       width: 100%;
@@ -47,17 +42,14 @@
       width: 100%;
       height: 100%;
       grid-template-columns: repeat(10, minmax(30px, 1fr));
-      /* ขยายขนาดช่อง */
       grid-template-rows: repeat(10, minmax(30px, 1fr));
       gap: 4px;
-      /* เพิ่มช่องว่างเล็กน้อย */
     }
 
     .cell {
       background-color: #f8bbd0;
       border-radius: 6px;
       font-size: calc(1.5vmin + 10px);
-      /* เดิม 0.8vmin ปรับให้ใหญ่ขึ้น */
       color: #000;
       display: flex;
       justify-content: center;
@@ -65,11 +57,8 @@
       cursor: pointer;
       user-select: none;
       height: 100%;
-      /* ทำให้ปุ่มสูงเต็มช่อง */
       width: 100%;
-      /* ทำให้ปุ่มกว้างเต็มช่อง */
       padding: 10%;
-      /* เพิ่มช่องว่างในปุ่ม */
     }
 
     .cell.revealed {
@@ -105,6 +94,61 @@
       font-size: 0.9em;
       color: #888;
     }
+
+    /* popup styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      animation: popup-fade 0.4s ease-out;
+    }
+
+    @keyframes popup-fade {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .popup h2 {
+      margin: 0 0 20px;
+      font-size: 1.8em;
+      color: #e91e63;
+    }
+
+    .popup button {
+      padding: 10px 20px;
+      background-color: #ff80ab;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #ec407a;
+    }
   </style>
 </head>
 
@@ -116,17 +160,26 @@
     <div class="board" id="board"></div>
   </div>
 
-  <!-- ปุ่มกลับเมนูหลัก -->
   <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
 
   <div class="footer">
     © 2025 | เล่นคลายง่วงด้วยกันนะ!
   </div>
 
+  <!-- popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup" id="popup">
+      <h2 id="popupMessage">🎉 ชนะแล้ว!</h2>
+      <button onclick="location.reload()">เล่นใหม่</button>
+    </div>
+  </div>
+
   <script>
     const boardSize = 10;
     const bombCount = 10;
     const board = document.getElementById('board');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupMessage = document.getElementById('popupMessage');
     let cells = [];
 
     function createBoard() {
@@ -155,8 +208,8 @@
       if (isBomb) {
         cell.classList.add('bomb');
         cell.textContent = '💣';
-        alert('💥 ระเบิด! เกมจบแล้ว 😭');
         revealAll();
+        showPopup('💥 แพ้แล้ว! ลองใหม่นะ');
         return;
       }
 
@@ -167,6 +220,8 @@
       } else {
         adjacent.forEach(i => revealCell(cells[i]));
       }
+
+      checkWin();
     }
 
     function getAdjacentCells(index) {
@@ -196,6 +251,22 @@
           cell.classList.add('revealed', 'bomb');
         }
       });
+    }
+
+    function checkWin() {
+      const unrevealed = cells.filter(cell =>
+        !cell.classList.contains('revealed') &&
+        cell.dataset.bomb !== 'true'
+      );
+      if (unrevealed.length === 0) {
+        revealAll();
+        showPopup('🎉 ยินดีด้วย! คุณชนะแล้ว 🎉');
+      }
+    }
+
+    function showPopup(message) {
+      popupMessage.textContent = message;
+      popupOverlay.style.display = 'flex';
     }
 
     createBoard();
