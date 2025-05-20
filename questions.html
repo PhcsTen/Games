@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>เกมสุภาษิตไทย - สุ่ม 5 ข้อ</title>
+  <title>เกมสุภาษิตไทย - สุ่ม 10 ข้อ</title>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
@@ -12,17 +11,14 @@
       margin: 30px auto;
       padding: 10px;
       background: #fff4cc;
-      /* เหลืองอ่อน */
       border-radius: 8px;
       box-shadow: 0 0 15px #996633;
-      /* เงาน้ำตาลทอง */
       color: #1a1a1a;
     }
 
     h1 {
       text-align: center;
       color: #4a2900;
-      /* น้ำตาลเข้ม */
       margin-bottom: 20px;
     }
 
@@ -30,7 +26,6 @@
       font-size: 20px;
       margin-bottom: 15px;
       color: #663300;
-      /* น้ำตาลเข้ม */
     }
 
     .back-button {
@@ -38,9 +33,7 @@
       margin: 20px auto;
       padding: 10px 20px;
       background-color: #996633;
-      /* น้ำตาลทอง */
       color: #fff4cc;
-      /* เหลืองอ่อน */
       text-decoration: none;
       border-radius: 25px;
       font-size: 0.8em;
@@ -51,7 +44,6 @@
 
     .back-button:hover {
       background-color: #cc9900;
-      /* เหลืองทองเข้ม */
       transform: scale(1.05);
     }
 
@@ -65,17 +57,13 @@
       border-radius: 8px;
       cursor: pointer;
       background-color: #ffcce5;
-      /* ชมพูอ่อน */
       color: #660033;
-      /* ตัวหนังสือเข้มขึ้นเล็กน้อยให้อ่านง่าย */
       transition: background-color 0.3s ease;
       box-shadow: 0 2px 4px rgba(255, 182, 193, 0.4);
-      /* เงาอ่อนลง */
     }
 
     .answers button:hover {
       background-color: #ff99cc;
-      /* สี hover ยังอยู่ในโทนอ่อนแต่เข้มขึ้นนิดนึง */
       box-shadow: 0 4px 8px rgba(255, 105, 180, 0.6);
     }
 
@@ -90,7 +78,6 @@
     .score {
       font-weight: bold;
       color: #cc0000;
-      /* แดงเข้ม */
     }
 
     .footer {
@@ -103,7 +90,6 @@
     }
   </style>
 </head>
-
 <body>
   <h1>เกมสุภาษิตไทย</h1>
   <div id="quiz-container">
@@ -138,7 +124,7 @@
       { question: "ขวานผ่าซาก หมายถึง?", answers: ["พูดตรงเกินไป", "ใช้ขวานทำลาย", "ไม่พูดไม่จา", "ตัดไม้ใหญ่"], correct: 0 }
     ];
 
-    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 5);
+    const selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 10);
 
     let currentQuestion = 0;
     let score = 0;
@@ -176,11 +162,10 @@
     function showResult() {
       questionEl.style.display = "none";
       answersEl.style.display = "none";
-      resultEl.innerHTML = `คุณตอบถูก <span class="score">${score}</span> จาก 5 ข้อ`;
+      resultEl.innerHTML = `คุณตอบถูก <span class="score">${score}</span> จาก 10 ข้อ`;
     }
 
     loadQuestion();
   </script>
 </body>
-
 </html>
