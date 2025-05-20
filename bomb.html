@@ -96,6 +96,12 @@
       color: #888;
     }
 
+    .center-button {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
     /* Popup Overlay */
     #popupOverlay {
       position: fixed;
@@ -148,7 +154,11 @@
     <div class="board" id="board"></div>
   </div>
 
-  <a href="index.html" class="game-button">← กลับเมนูหลัก</a>
+  <!-- ปุ่มกลับเมนูหลัก -->
+  <div class="center-button">
+    <a href="index.html" class="game-button">← กลับเมนูหลัก</a>
+  </div>
+
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
 
   <!-- ป๊อปอัปเมื่อชนะหรือแพ้ -->
@@ -156,7 +166,7 @@
     <div id="popupBox">
       <div id="popupMessage"></div>
       <div class="popup-buttons">
-        <button class="game-button" onclick="resetGame()">🔁 เล่นใหม่</button>
+        <a href="index.html" class="game-button">🏠 กลับเมนูหลัก</a>
       </div>
     </div>
   </div>
@@ -287,5 +297,6 @@
       resetGame();
     };
   </script>
+
 </body>
 </html>
