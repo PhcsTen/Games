@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>เกมส์วางระเบิด (Minesweeper)</title>
+  <title>เกมส์วางระเบิด</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -41,8 +39,6 @@
       display: grid;
       width: 100%;
       height: 100%;
-      grid-template-columns: repeat(10, minmax(30px, 1fr));
-      grid-template-rows: repeat(10, minmax(30px, 1fr));
       gap: 4px;
     }
 
@@ -71,20 +67,25 @@
       color: white;
     }
 
-    .back-button {
-      display: inline-block;
-      margin: 20px auto;
+    .button-container {
+      margin: 10px;
+    }
+
+    .game-button {
+      margin: 5px;
       padding: 10px 20px;
       background-color: #ff80ab;
       color: white;
-      text-decoration: none;
+      border: none;
       border-radius: 25px;
       font-size: 1em;
+      cursor: pointer;
       transition: 0.3s;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
     }
 
-    .back-button:hover {
+    .game-button:hover {
       background-color: #ec407a;
       transform: scale(1.05);
     }
@@ -95,94 +96,106 @@
       color: #888;
     }
 
-    /* popup styles */
-    .popup-overlay {
+    /* Popup Overlay */
+    #popupOverlay {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.5);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
 
-    .popup {
+    #popupBox {
       background: white;
-      padding: 30px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      animation: popup-fade 0.4s ease-out;
-    }
-
-    @keyframes popup-fade {
-      from {
-        transform: scale(0.8);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    .popup h2 {
-      margin: 0 0 20px;
+      padding: 30px 50px;
+      border-radius: 12px;
       font-size: 1.8em;
-      color: #e91e63;
+      text-align: center;
+      animation: popup 0.4s ease-in-out;
     }
 
-    .popup button {
-      padding: 10px 20px;
-      background-color: #ff80ab;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1em;
-      cursor: pointer;
+    .popup-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
     }
 
-    .popup button:hover {
-      background-color: #ec407a;
+    @keyframes popup {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
-
 <body>
 
   <h1>💣 เกมส์วางระเบิด</h1>
+
+  <div class="button-container">
+    <label for="difficulty">เลือกระดับ: </label>
+    <select id="difficulty" onchange="resetGame()">
+      <option value="easy">ง่าย</option>
+      <option value="medium" selected>ปานกลาง</option>
+      <option value="hard">ยาก</option>
+    </select>
+  </div>
 
   <div class="board-container">
     <div class="board" id="board"></div>
   </div>
 
-  <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
+  <a href="index.html" class="game-button">← กลับเมนูหลัก</a>
+  <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
 
-  <div class="footer">
-    © 2025 | เล่นคลายง่วงด้วยกันนะ!
-  </div>
-
-  <!-- popup -->
-  <div class="popup-overlay" id="popupOverlay">
-    <div class="popup" id="popup">
-      <h2 id="popupMessage">🎉 ชนะแล้ว!</h2>
-      <button onclick="location.reload()">เล่นใหม่</button>
+  <!-- ป๊อปอัปเมื่อชนะหรือแพ้ -->
+  <div id="popupOverlay">
+    <div id="popupBox">
+      <div id="popupMessage"></div>
+      <div class="popup-buttons">
+        <button class="game-button" onclick="resetGame()">🔁 เล่นใหม่</button>
+      </div>
     </div>
   </div>
 
   <script>
-    const boardSize = 10;
-    const bombCount = 10;
+    let boardSize = 10;
+    let bombCount = 30;
+    let cells = [];
+
     const board = document.getElementById('board');
     const popupOverlay = document.getElementById('popupOverlay');
     const popupMessage = document.getElementById('popupMessage');
-    let cells = [];
+
+    function setDifficulty(level) {
+      if (level === 'easy') {
+        boardSize = 8;
+        bombCount = 10;
+      } else if (level === 'medium') {
+        boardSize = 10;
+        bombCount = 30;
+      } else if (level === 'hard') {
+        boardSize = 12;
+        bombCount = 50;
+      }
+    }
+
+    function resetGame() {
+      const difficulty = document.getElementById('difficulty').value;
+      setDifficulty(difficulty);
+      board.innerHTML = '';
+      cells = [];
+      popupOverlay.style.display = 'none';
+      createBoard();
+    }
 
     function createBoard() {
+      board.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+      board.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
+
       const bombs = Array(bombCount).fill('💣');
       const empty = Array(boardSize * boardSize - bombCount).fill('');
       const gameArray = [...bombs, ...empty].sort(() => Math.random() - 0.5);
@@ -209,14 +222,15 @@
         cell.classList.add('bomb');
         cell.textContent = '💣';
         revealAll();
-        showPopup('💥 แพ้แล้ว! ลองใหม่นะ');
+        showPopup('💥 แพ้แล้ว! 😭');
         return;
       }
 
       const adjacent = getAdjacentCells(index);
-      const bombCount = adjacent.filter(i => cells[i].dataset.bomb === 'true').length;
-      if (bombCount > 0) {
-        cell.textContent = bombCount;
+      const bombCountAround = adjacent.filter(i => cells[i].dataset.bomb === 'true').length;
+
+      if (bombCountAround > 0) {
+        cell.textContent = bombCountAround;
       } else {
         adjacent.forEach(i => revealCell(cells[i]));
       }
@@ -249,18 +263,18 @@
         if (cell.dataset.bomb === 'true') {
           cell.textContent = '💣';
           cell.classList.add('revealed', 'bomb');
+        } else {
+          cell.classList.add('revealed');
         }
       });
     }
 
     function checkWin() {
-      const unrevealed = cells.filter(cell =>
-        !cell.classList.contains('revealed') &&
-        cell.dataset.bomb !== 'true'
-      );
-      if (unrevealed.length === 0) {
+      const unrevealed = cells.filter(cell => !cell.classList.contains('revealed'));
+      const bombsLeft = unrevealed.filter(cell => cell.dataset.bomb === 'true');
+      if (unrevealed.length === bombsLeft.length) {
         revealAll();
-        showPopup('🎉 ยินดีด้วย! คุณชนะแล้ว 🎉');
+        showPopup('🎉 ชนะแล้ว! 🏆');
       }
     }
 
@@ -269,9 +283,9 @@
       popupOverlay.style.display = 'flex';
     }
 
-    createBoard();
+    window.onload = () => {
+      resetGame();
+    };
   </script>
-
 </body>
-
 </html>
