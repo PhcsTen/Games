@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>เกมบันไดงู 🐍🪜</title>
   <style>
     body {
       font-family: 'Tahoma', sans-serif;
       background: #f8faff;
       text-align: center;
-      padding: 20px;
+      padding: 10px;
+      margin: 0;
     }
 
     #board {
       display: grid;
-      grid-template-columns: repeat(10, 50px);
-      grid-template-rows: repeat(10, 50px);
-      gap: 1px;
-      margin: 20px auto;
-      width: 500px;
+      grid-template-columns: repeat(10, 1fr);
+      width: 100vw;
+      max-width: 100vmin;
+      aspect-ratio: 1 / 1;
+      margin: 10px auto;
       border: 2px solid #444;
+      gap: 1px;
     }
 
     .cell {
-      width: 50px;
-      height: 50px;
       background: #ecf0f1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: 12px;
+      font-size: 3vmin;
       position: relative;
       padding: 2px;
     }
 
     .player {
-      font-size: 16px;
+      font-size: 3.5vmin;
       position: absolute;
     }
 
@@ -55,7 +54,7 @@
     }
 
     .icon {
-      font-size: 18px;
+      font-size: 3.5vmin;
     }
 
     button {
@@ -105,9 +104,7 @@
     <button onclick="startGame(1)">เล่น 1 คน</button>
     <button onclick="startGame(2)">เล่น 2 คน</button>
     <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
-    <div class="footer">
-      © 2025 | เล่นคลายง่วงด้วยกันนะ!
-    </div>
+    <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
   </div>
 
   <!-- ส่วนเกม -->
@@ -117,10 +114,7 @@
     <p id="player2Display">ตำแหน่ง ผู้เล่น 2 (😎): <span id="pos2">1</span></p>
     <p>แต้มลูกเต๋า: <span id="dice">-</span></p>
     <button onclick="rollDice()">ทอยลูกเต๋า 🎲</button>
-
-    <!-- ปุ่มกลับเมนู -->
     <button onclick="goBackToMenu()" class="back-button">← กลับหน้าเลือกผู้เล่น</button>
-
     <p id="status"></p>
   </div>
 
@@ -131,7 +125,6 @@
     const player2Display = document.getElementById('player2Display');
     const diceDisplay = document.getElementById('dice');
     const statusDisplay = document.getElementById('status');
-
     const menu = document.getElementById('menu');
     const game = document.getElementById('game');
 
@@ -256,7 +249,7 @@
       if (pos === 100) {
         setTimeout(() => {
           alert(`🎉 ผู้เล่น ${player + 1} ชนะแล้ว!`);
-          goBackToMenu(); // รีเซ็ตกลับเมนู
+          goBackToMenu();
         }, 300);
         return;
       }
@@ -265,4 +258,5 @@
     }
   </script>
 </body>
+
 </html>
