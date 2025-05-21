@@ -17,6 +17,12 @@
       color: #d63384;
     }
 
+    #timer {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 10px;
+    }
+
     .game-board {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -93,10 +99,10 @@
 <body>
 
   <h1>🧠 เกมจับคู่แก้ง่วง</h1>
+  <div id="timer">⏳ เหลือเวลา: 2:00</div>
 
   <div class="game-board" id="gameBoard"></div>
 
-  <!-- ปุ่มกลับเมนูหลัก -->
   <a href="index.html" class="back-button">← กลับเมนูหลัก</a>
 
   <div class="footer">
@@ -104,8 +110,8 @@
   </div>
 
   <script>
-    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍒','🍏', '🥭', '🥑', '🥕'];
-    const emojis = [...baseEmojis, ...baseEmojis]; // สร้างคู่ทั้งหมด
+    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍒', '🍏', '🥭', '🥑', '🥕'];
+    const emojis = [...baseEmojis, ...baseEmojis];
     let shuffled = emojis.sort(() => 0.5 - Math.random());
 
     const board = document.getElementById('gameBoard');
@@ -134,7 +140,9 @@
           card1.classList.add('matched');
           card2.classList.add('matched');
           matchedCount += 2;
+
           if (matchedCount === emojis.length) {
+            clearInterval(countdown); // หยุดจับเวลาเมื่อชนะ
             setTimeout(() => alert("🎉 ชนะแล้ว! สุดยอดเลย!"), 300);
           }
         } else {
@@ -148,6 +156,23 @@
         flippedCards = [];
       }
     }
+
+    // จับเวลาถอยหลัง 2 นาที
+    let totalTime = 120;
+    const timerDisplay = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timerDisplay.textContent = `⏳ เหลือเวลา: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      totalTime--;
+
+      if (totalTime < 0) {
+        clearInterval(countdown);
+        alert("⏰ หมดเวลา! ลองใหม่อีกครั้งนะ");
+        location.reload(); // หรือใช้ window.location.href = 'index.html';
+      }
+    }, 1000);
   </script>
 
 </body>
