@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -105,7 +107,8 @@
     /* Popup Overlay */
     #popupOverlay {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       background-color: rgba(0, 0, 0, 0.5);
@@ -132,11 +135,19 @@
     }
 
     @keyframes popup {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <h1>💣 เกมส์วางระเบิด</h1>
@@ -156,7 +167,7 @@
 
   <!-- ปุ่มกลับเมนูหลัก -->
   <div class="center-button">
-    <button class="game-button" onclick="resetGame()">🔁 เล่นใหม่</button>
+    <a href="index.html" class="game-button">← กลับเมนูหลัก</a>
   </div>
 
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
@@ -166,7 +177,7 @@
     <div id="popupBox">
       <div id="popupMessage"></div>
       <div class="popup-buttons">
-        <a href="index.html" class="game-button">🏠 กลับเมนูหลัก</a>
+        <button class="game-button" onclick="resetGame()">🔁 เล่นใหม่</button>
       </div>
     </div>
   </div>
@@ -299,4 +310,5 @@
   </script>
 
 </body>
+
 </html>
