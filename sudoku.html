@@ -11,7 +11,7 @@
       text-align: center;
       padding: 10px;
       margin: 0;
-      background: #f5f5f5;
+      background: #e3f2fd; /* ฟ้าอ่อน */
     }
     table {
       border-collapse: collapse;
@@ -19,7 +19,7 @@
     }
 
     td {
-      border: 1px solid #888;
+      border: 1px solid #90caf9; /* ขอบบางสีฟ้า */
       width: 10vw;
       aspect-ratio: 1 / 1;
       max-width: 35px;
@@ -28,6 +28,7 @@
       text-align: center;
       box-sizing: border-box;
       padding: 0;
+      color: #333;
     }
 
     input {
@@ -40,39 +41,73 @@
       padding: 0;
       margin: 0;
       background: none;
+      color: #0d47a1;
     }
 
     input:focus {
       outline: none;
-      background-color: #eef;
+      background-color: #e1f5fe; /* ฟ้าจาง */
     }
 
-    .thick-top { border-top: 3px solid black !important; }
-    .thick-left { border-left: 3px solid black !important; }
-    .thick-right { border-right: 3px solid black !important; }
-    .thick-bottom { border-bottom: 3px solid black !important; }
+    .thick-top { border-top: 3px solid #1565c0 !important; }
+    .thick-left { border-left: 3px solid #1565c0 !important; }
+    .thick-right { border-right: 3px solid #1565c0 !important; }
+    .thick-bottom { border-bottom: 3px solid #1565c0 !important; }
 
     .controls {
       margin-top: 10px;
     }
+
     button, select {
       margin: 5px;
-      padding: 10px;
+      padding: 10px 16px;
       font-size: 16px;
+      background-color: #2196f3;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
+
+    button:hover, select:hover {
+      background-color: #1976d2;
+    }
+
     #scoreboard {
       margin-top: 10px;
       font-size: 1.2em;
+      color: #0d47a1;
     }
+
     .footer {
       margin-top: 30px;
       font-size: 0.9em;
       color: #555;
     }
+
     .btn-back {
       margin-top: 20px;
       font-size: 1em;
       padding: 8px 16px;
+      background-color: #90a4ae;
+    }
+
+    .btn-back:hover {
+      background-color: #78909c;
+    }
+
+    /* สี input ตอบถูก/ผิด */
+    input.correct {
+      background-color: #c8e6c9 !important;
+    }
+
+    input.wrong {
+      background-color: #ffcdd2 !important;
+    }
+
+    input.solution {
+      background-color: #bbdefb !important;
     }
   </style>
 </head>
@@ -85,6 +120,7 @@
       <option value="40" selected>ปานกลาง</option>
       <option value="50">ยาก</option>
     </select>
+  <br>
     <button onclick="generateAndRender()">เริ่มเกมใหม่</button>
     <button onclick="checkAnswers()">ตรวจคำตอบ</button>
     <button onclick="showSolution()">เฉลย</button>
@@ -207,11 +243,12 @@
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
         const val = parseInt(input.value);
+        input.classList.remove("correct", "wrong");
         if (val === fullBoard[row][col]) {
-          input.style.backgroundColor = '#cfc';
+          input.classList.add("correct");
           correct++;
         } else {
-          input.style.backgroundColor = '#fbb';
+          input.classList.add("wrong");
         }
       });
       document.getElementById('score').textContent = correct;
@@ -222,7 +259,8 @@
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
         input.value = fullBoard[row][col];
-        input.style.backgroundColor = '#ccf';
+        input.classList.remove("correct", "wrong");
+        input.classList.add("solution");
       });
     }
 
