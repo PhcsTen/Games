@@ -10,7 +10,6 @@
       padding: 0;
       height: 100%;
       font-family: 'Prompt', sans-serif;
-      background-color: #e7dbe1; /* สีขาว */
       background: linear-gradient(to bottom, #fff0f5, #ffe6f0);
       display: flex;
       flex-direction: column;
@@ -38,10 +37,13 @@
       margin-bottom: 5px;
     }
 
-    p {
-      margin-top: 0;
-      margin-bottom: 15px;
-      color: #555;
+    #preview {
+      width: 160px;
+      height: auto;
+      margin-bottom: 10px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .puzzle-container {
@@ -58,7 +60,6 @@
     .piece {
       width: 80px;
       height: 80px;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/JPEG_example_flower.jpg/320px-JPEG_example_flower.jpg');
       background-size: 320px 320px;
       background-repeat: no-repeat;
       position: absolute;
@@ -80,20 +81,38 @@
 <body>
 
   <h1>🧩 เกมจิ๊กซอว์</h1>
-
+  <img id="preview" src="" alt="ภาพตัวอย่าง">
   <div class="puzzle-container" id="puzzle"></div>
 
   <script>
     const puzzle = document.getElementById('puzzle');
+    const preview = document.getElementById('preview');
     const size = 4;
     const pieceSize = 80;
     let pieces = [];
+
+    const imageUrls = [
+      "https://picsum.photos/id/1011/320/320",
+      "https://picsum.photos/id/1025/320/320",
+      "https://picsum.photos/id/1033/320/320",
+      "https://picsum.photos/id/1043/320/320",
+      "https://picsum.photos/id/1050/320/320",
+      "https://picsum.photos/id/1062/320/320",
+      "https://picsum.photos/id/1074/320/320",
+      "https://picsum.photos/id/1084/320/320",
+      "https://picsum.photos/id/1081/320/320",
+      "https://picsum.photos/id/1020/320/320"
+    ];
+
+    const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    preview.src = randomImage;
 
     // สร้างชิ้นจิ๊กซอว์
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const piece = document.createElement('div');
         piece.className = 'piece';
+        piece.style.backgroundImage = `url('${randomImage}')`;
         piece.style.backgroundPosition = `-${x * pieceSize}px -${y * pieceSize}px`;
         piece.dataset.index = y * size + x;
         piece.style.left = `${Math.random() * (320 - pieceSize)}px`;
@@ -126,8 +145,32 @@
         if (isDragging) {
           isDragging = false;
           el.style.zIndex = 1;
+          checkWin(); // เช็กทุกครั้งที่ปล่อยชิ้น
         }
       });
+    }
+
+    function checkWin() {
+      let correct = 0;
+      pieces.forEach(piece => {
+        const index = parseInt(piece.dataset.index);
+        const correctX = (index % size) * pieceSize;
+        const correctY = Math.floor(index / size) * pieceSize;
+        const currentX = parseInt(piece.style.left);
+        const currentY = parseInt(piece.style.top);
+        const dx = Math.abs(currentX - correctX);
+        const dy = Math.abs(currentY - correctY);
+
+        if (dx <= 10 && dy <= 10) {
+          correct++;
+        }
+      });
+
+      if (correct === size * size) {
+        setTimeout(() => {
+          alert("🎉 ชนะแล้ว! เก่งมาก!");
+        }, 200);
+      }
     }
 
     function goBack() {
