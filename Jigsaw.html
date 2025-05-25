@@ -76,11 +76,18 @@
       font-size: 0.9em;
       color: #888;
     }
+
+    #timer {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
   <h1>🧩 เกมจิ๊กซอว์</h1>
+  <p>⏱️ เวลา: <span id="timer">00:00</span></p>
   <img id="preview" src="" alt="ภาพตัวอย่าง">
   <div class="puzzle-container" id="puzzle"></div>
 
@@ -90,6 +97,23 @@
     const size = 4;
     const pieceSize = 80;
     let pieces = [];
+
+    // ตัวแปรจับเวลา
+    let seconds = 0;
+    let timerInterval = null;
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
 
     const imageUrls = [
       "https://picsum.photos/id/1011/320/320",
@@ -123,6 +147,8 @@
       }
     }
 
+    startTimer(); // เริ่มนับเวลา
+
     function makeDraggable(el) {
       let offsetX, offsetY, isDragging = false;
 
@@ -145,7 +171,7 @@
         if (isDragging) {
           isDragging = false;
           el.style.zIndex = 1;
-          checkWin(); // เช็กทุกครั้งที่ปล่อยชิ้น
+          checkWin(); // ตรวจตำแหน่งทุกครั้ง
         }
       });
     }
@@ -167,8 +193,11 @@
       });
 
       if (correct === size * size) {
+        stopTimer();
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
         setTimeout(() => {
-          alert("🎉 ชนะแล้ว! เก่งมาก!");
+          alert(`🎉 ชนะแล้ว! เก่งมาก!\nใช้เวลา ${mins}:${secs} นาที`);
         }, 200);
       }
     }
