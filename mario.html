@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Super Mario 🎮</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ฟอนต์ Prompt -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Prompt', sans-serif;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+    }
+
+    #game {
+      width: 100%;
+      height: 400px;
+      background: url('https://www.mariowiki.com/images/thumb/7/7a/SMB1_Overworld_BG_2.png/1200px-SMB1_Overworld_BG_2.png') repeat-x;
+      background-size: auto 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ground {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background: url('https://www.mariowiki.com/images/thumb/0/0a/SMB_Ground_Block.png/200px-SMB_Ground_Block.png') repeat-x;
+      background-size: auto 100%;
+    }
+
+    .mario,
+    .enemy,
+    .coin,
+    .powerup {
+      width: 40px;
+      height: 40px;
+      font-size: 32px;
+      text-align: center;
+      line-height: 40px;
+      position: absolute;
+      bottom: 50px;
+    }
+
+    .mario {
+      left: 60px;
+      z-index: 10;
+      transition: transform 0.1s;
+    }
+
+    .info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      border-radius: 8px;
+      z-index: 100;
+      font-weight: bold;
+    }
+
+    .game-over,
+    .level-up {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 200;
+      padding: 20px;
+      display: none;
+    }
+
+    .game-over {
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+    }
+
+    .level-up {
+      background: rgba(255, 215, 0, 0.9);
+      color: black;
+      font-weight: bold;
+    }
+
+    .btn-back {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff6347;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      z-index: 300;
+      transition: background 0.3s ease;
+      font-family: 'Prompt', sans-serif;
+    }
+
+    .btn-back:hover {
+      background: #e5533d;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: white;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px 0;
+      z-index: 300;
+      font-family: 'Prompt', sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      .info {
+        font-size: 14px;
+        padding: 4px 8px;
+      }
+
+      .btn-back {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .footer {
+        font-size: 12px;
+      }
+
+      .mario,
+      .enemy,
+      .coin,
+      .powerup {
+        width: 36px;
+        height: 36px;
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game">
+    <div class="ground"></div>
+    <div class="mario" id="mario">👨‍🔧</div>
+    <div class="info">
+      ❤️ <span id="lives">3</span> | 💰 คะแนน: <span id="score">0</span> | 🌍 ด่าน: <span id="level">1</span>
+    </div>
+    <div class="game-over" id="gameOver">
+      <h2>💀 เกมจบ!</h2>
+      <p>คะแนนสุดท้าย: <span id="finalScore">0</span></p>
+      <button onclick="location.reload()">เล่นอีกครั้ง</button>
+    </div>
+    <div class="level-up" id="levelUp">
+      <h2>🎉 ด่านใหม่!</h2>
+      <p>ระดับ <span id="newLevel">1</span></p>
+    </div>
+  </div>
+
+  <!-- เสียงประกอบ -->
+  <audio id="jumpSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+  <audio id="coinSound" src="https://www.soundjay.com/button/beep-08b.wav"></audio>
+  <audio id="gameOverSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+  <audio id="powerupSound" src="https://www.soundjay.com/button/button-4.wav"></audio>
+  <audio id="bgMusic" src="https://vgmsite.com/soundtracks/super-mario-bros./qpefiyyl/01%20-%20Overworld.mp3"
+    loop></audio>
+
+  <!-- สคริปต์เกม -->
+  <script>
+    const mario = document.getElementById('mario');
+    const scoreDisplay = document.getElementById('score');
+    const livesDisplay = document.getElementById('lives');
+    const levelDisplay = document.getElementById('level');
+    const gameOverScreen = document.getElementById('gameOver');
+    const finalScoreDisplay = document.getElementById('finalScore');
+    const levelUpScreen = document.getElementById('levelUp');
+    const newLevelDisplay = document.getElementById('newLevel');
+    const jumpSound = document.getElementById('jumpSound');
+    const coinSound = document.getElementById('coinSound');
+    const gameOverSound = document.getElementById('gameOverSound');
+    const powerupSound = document.getElementById('powerupSound');
+    const bgMusic = document.getElementById('bgMusic');
+    const ground = document.querySelector('.ground');
+
+    let score = 0;
+    let lives = 3;
+    let level = 1;
+    let isJumping = false;
+    let jumpHeight = 0;
+    let marioX = 60;
+    let moveStep = 10;
+    let gameActive = true;
+    let bgPos = 0;
+    let groundPos = 0;
+    let enemies = [];
+    let coins = [];
+    let powerups = [];
+    let enemySpeed = 5;
+    let spawnRate = 2000;
+    let lastSpawnTime = 0;
+
+    bgMusic.volume = 0.3;
+    bgMusic.play();
+
+    function createElement(type, x) {
+      const element = document.createElement('div');
+      element.className = type;
+
+      switch (type) {
+        case 'enemy':
+          element.innerHTML = Math.random() > 0.5 ? '🐢' : '🐸';
+          element.style.left = x + 'px';
+          enemies.push(element);
+          break;
+        case 'coin':
+          element.innerHTML = '💰';
+          element.style.left = x + 'px';
+          element.style.bottom = (50 + Math.random() * 100) + 'px';
+          coins.push(element);
+          break;
+        case 'powerup':
+          element.innerHTML = Math.random() > 0.5 ? '🍄' : '⭐';
+          element.style.left = x + 'px';
+          element.style.bottom = (50 + Math.random() * 100) + 'px';
+          powerups.push(element);
+          break;
+      }
+
+      document.getElementById('game').appendChild(element);
+      return element;
+    }
+
+    function gameLoop(timestamp) {
+      if (!gameActive) return;
+
+      bgPos -= 1;
+      groundPos -= 3;
+      document.getElementById('game').style.backgroundPosition = bgPos + 'px 0';
+      ground.style.backgroundPosition = groundPos + 'px 0';
+
+      if (timestamp - lastSpawnTime > spawnRate) {
+        const x = window.innerWidth;
+
+        if (Math.random() < 0.3 + (level * 0.05)) createElement('enemy', x);
+        if (Math.random() < 0.5) createElement('coin', x);
+        if (Math.random() < 0.1 + (level * 0.01)) createElement('powerup', x);
+
+        lastSpawnTime = timestamp;
+      }
+
+      [...enemies, ...coins, ...powerups].forEach((el, i, arr) => {
+        const speed = el.className === 'enemy' ? enemySpeed :
+          el.className === 'coin' ? enemySpeed * 0.8 :
+            enemySpeed * 0.7;
+
+        const newLeft = parseFloat(el.style.left) - speed;
+        if (newLeft < -50) {
+          el.remove();
+          arr.splice(i, 1);
+        } else {
+          el.style.left = newLeft + 'px';
+        }
+      });
+
+      checkCollision();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function jump() {
+      if (!isJumping && gameActive) {
+        isJumping = true;
+        jumpSound.play();
+        let pos = 0;
+        const up = setInterval(() => {
+          if (pos >= 100) {
+            clearInterval(up);
+            const down = setInterval(() => {
+              if (pos <= 0) {
+                clearInterval(down);
+                isJumping = false;
+                mario.style.bottom = '50px';
+              } else {
+                pos -= 5;
+                mario.style.bottom = (50 + pos) + 'px';
+                jumpHeight = pos;
+              }
+            }, 20);
+          } else {
+            pos += 5;
+            mario.style.bottom = (50 + pos) + 'px';
+            jumpHeight = pos;
+          }
+        }, 20);
+      }
+    }
+
+    function checkCollision() {
+      if (!gameActive) return;
+      const marioRect = mario.getBoundingClientRect();
+
+      enemies.forEach((enemy, i) => {
+        const rect = enemy.getBoundingClientRect();
+        if (rect.left < marioRect.right && rect.right > marioRect.left && rect.bottom > marioRect.top && rect.top < marioRect.bottom) {
+          if (jumpHeight > 50) {
+            score += 20 * level;
+            scoreDisplay.textContent = score;
+            enemy.remove();
+            enemies.splice(i, 1);
+          } else {
+            lives--;
+            livesDisplay.textContent = lives;
+            mario.style.transform = 'scale(1.5)';
+            setTimeout(() => mario.style.transform = 'scale(1)', 200);
+            if (lives <= 0) gameOver();
+          }
+        }
+      });
+
+      coins.forEach((coin, i) => {
+        const rect = coin.getBoundingClientRect();
+        if (rect.left < marioRect.right && rect.right > marioRect.left && rect.bottom > marioRect.top && rect.top < marioRect.bottom) {
+          coinSound.play();
+          score += 10 * level;
+          scoreDisplay.textContent = score;
+          coin.remove();
+          coins.splice(i, 1);
+          if (score >= 50 * level * level) levelUp();
+        }
+      });
+
+      powerups.forEach((p, i) => {
+        const rect = p.getBoundingClientRect();
+        if (rect.left < marioRect.right && rect.right > marioRect.left && rect.bottom > marioRect.top && rect.top < marioRect.bottom) {
+          powerupSound.play();
+          lives++;
+          livesDisplay.textContent = lives;
+          p.remove();
+          powerups.splice(i, 1);
+        }
+      });
+    }
+
+    function levelUp() {
+      level++;
+      levelDisplay.textContent = level;
+      newLevelDisplay.textContent = level;
+      enemySpeed += 1;
+      spawnRate = Math.max(500, spawnRate - 200);
+      levelUpScreen.style.display = 'block';
+      setTimeout(() => levelUpScreen.style.display = 'none', 1500);
+    }
+
+    function gameOver() {
+      gameActive = false;
+      finalScoreDisplay.textContent = score;
+      gameOverScreen.style.display = 'block';
+      gameOverSound.play();
+      bgMusic.pause();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (!gameActive) return;
+      if ((e.key === "ArrowUp" || e.key === " ") && !isJumping) jump();
+      else if (e.key === "ArrowRight") {
+        marioX += moveStep;
+        if (marioX > window.innerWidth - 40) marioX = window.innerWidth - 40;
+        mario.style.left = marioX + 'px';
+      } else if (e.key === "ArrowLeft") {
+        marioX -= moveStep;
+        if (marioX < 0) marioX = 0;
+        mario.style.left = marioX + 'px';
+      }
+    });
+
+    requestAnimationFrame(gameLoop);
+
+    for (let i = 0; i < 3; i++) {
+      createElement('enemy', window.innerWidth + (i * 300));
+      createElement('coin', window.innerWidth + (i * 200));
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <!-- ปุ่มกลับและฟุตเตอร์ -->
+  <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
+  <div class="footer">
+    © 2025 | เล่นคลายง่วงด้วยกันนะ!
+  </div>
+</body>
+
+</html>
