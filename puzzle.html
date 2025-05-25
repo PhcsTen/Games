@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🧠 15 Puzzle</title>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(to bottom, #fce4ec, #f8bbd0);
+            height: 100vh;
+            margin: 0;
+        }
+
+        .btn-back {
+            margin: 15px;
+            background-color: #ff99cc;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-back:hover {
+            background-color: #ff66aa;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+            color: #d81b60;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(4, 80px);
+            gap: 5px;
+        }
+
+        .tile {
+            width: 80px;
+            height: 80px;
+            background-color: #f06292;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .empty {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        #timer {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🧠 เกม 15 Puzzle</h1>
+    <p>⏱️ เวลา: <span id="timer">00:00</span></p>
+    <div class="board" id="board"></div>
+
+    <script>
+        const board = document.getElementById('board');
+        let tiles = [];
+
+        // ตัวแปรจับเวลา
+        let seconds = 0;
+        let timerInterval = null;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+                const secs = String(seconds % 60).padStart(2, '0');
+                document.getElementById('timer').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+
+        // สร้างอาร์เรย์เลข 1-15 และช่องว่าง
+        function initGame() {
+            let numbers = [...Array(15).keys()].map(n => n + 1);
+            numbers.push(""); // ช่องว่าง
+
+            // สลับแบบสุ่ม
+            do {
+                numbers = shuffle(numbers);
+            } while (!isSolvable(numbers));
+
+            tiles = numbers;
+            renderBoard();
+        }
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function isSolvable(arr) {
+            let inversions = 0;
+            for (let i = 0; i < 15; i++) {
+                for (let j = i + 1; j < 15; j++) {
+                    if (arr[i] && arr[j] && arr[i] > arr[j]) inversions++;
+                }
+            }
+            const emptyRow = Math.floor(arr.indexOf("") / 4);
+            return (inversions + emptyRow) % 2 === 0;
+        }
+
+        function renderBoard() {
+            board.innerHTML = "";
+            tiles.forEach((value, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                if (value === "") tile.classList.add('empty');
+                tile.textContent = value;
+                tile.addEventListener('click', () => moveTile(index));
+                board.appendChild(tile);
+            });
+        }
+
+        function moveTile(index) {
+            const emptyIndex = tiles.indexOf("");
+            const validMoves = [
+                index - 1, index + 1,
+                index - 4, index + 4
+            ];
+
+            // ห้ามเลื่อนข้ามแถว
+            if (index % 4 === 0) validMoves.splice(validMoves.indexOf(index - 1), 1);
+            if (index % 4 === 3) validMoves.splice(validMoves.indexOf(index + 1), 1);
+
+            if (validMoves.includes(emptyIndex)) {
+                [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+                renderBoard();
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            const win = [...Array(15).keys()].map(n => n + 1).concat("");
+            if (tiles.join() === win.join()) {
+                setTimeout(() => {
+                    alert("🎉 ชนะแล้ว! เรียงครบ 1–15");
+                }, 200);
+            }
+        }
+
+        startTimer(); // เริ่มนับเวลา
+
+        initGame();
+
+        function goBack() {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
+    <div class="footer">
+        © 2025 | เล่นคลายง่วงด้วยกันนะ!
+    </div>
+
+</body>
+
+</html>
