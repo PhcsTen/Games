@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>เกมเล่นแก้เครียด</title>
   <style>
     body {
@@ -12,22 +11,25 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: #f0f0f0;
-      background-color: #dbb4c8;
+      background: #dbb4c8;
       overflow: hidden;
       font-family: 'Prompt', sans-serif;
     }
 
     .menu-container {
       position: relative;
-      width: 600px;
-      height: 600px;
+      width: 90vw;
+      height: 90vw;
+      max-width: 600px;
+      max-height: 600px;
     }
 
     .center-circle {
       position: absolute;
-      width: 150px;
-      height: 150px;
+      width: 25vw;
+      height: 25vw;
+      max-width: 150px;
+      max-height: 150px;
       background: #df7ada;
       border-radius: 50%;
       top: 50%;
@@ -55,7 +57,7 @@
     .center-text {
       font-weight: bold;
       color: #fff;
-      font-size: 20px;
+      font-size: 4vw;
     }
 
     .menu-items {
@@ -69,8 +71,10 @@
 
     .menu-item {
       position: absolute;
-      width: 100px;
-      height: 100px;
+      width: 15vw;
+      height: 15vw;
+      max-width: 100px;
+      max-height: 100px;
       background: #e9b2e7;
       border-radius: 50%;
       display: flex;
@@ -80,7 +84,7 @@
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       transition: all 0.3s;
-      font-size: 12px;
+      font-size: 2.5vw;
       padding: 5px;
       box-sizing: border-box;
       text-decoration: none;
@@ -94,37 +98,42 @@
       background: #f8c6f5;
     }
 
-    .top-menu {
+    .top-menu, .instructions {
       position: fixed;
-      top: 20px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(255, 255, 255, 0.8);
-      padding: 10px 20px;
+      padding: 8px 15px;
       border-radius: 20px;
-      font-size: 18px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 4vw;
+      text-align: center;
+    }
+
+    .top-menu {
+      top: 10px;
     }
 
     .instructions {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.8);
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 16px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      bottom: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .center-text {
+        font-size: 20px;
+      }
+      .menu-item {
+        font-size: 12px;
+      }
+      .top-menu, .instructions {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
-
 <body>
 
-  <div class="top-menu">
-    😄 มาเล่นกัน! 🎉
-  </div>
+  <div class="top-menu">😄 มาเล่นกัน! 🎉</div>
 
   <div class="menu-container">
     <div class="center-circle" id="centerCircle">
@@ -133,12 +142,9 @@
     <div class="menu-items" id="menuItems"></div>
   </div>
 
-  <div class="instructions">
-    © 2025 | ทำเล่นๆ แต่จริงจัง 💻
-  </div>
+  <div class="instructions">© 2025 | ทำเล่นๆ แต่จริงจัง 💻</div>
 
   <script>
-    // ข้อมูลเมนูพร้อมลิงก์
     const menuData = [
       { number: "💣", title: "เกมวางระเบิด", link: "bomb.html" },
       { number: "🧠", title: "เกมจับคู่", link: "to_match.html" },
@@ -153,14 +159,13 @@
     const menuItems = document.getElementById('menuItems');
     const centerCircle = document.getElementById('centerCircle');
 
-    let currentAngle = 0;
-    const radius = 200;
-    const centerX = 300;
-    const centerY = 300;
-
-    // สร้างเมนู items
     function createMenuItems() {
       menuItems.innerHTML = '';
+
+      const container = document.querySelector('.menu-container');
+      const radius = container.offsetWidth * 0.33;
+      const centerX = container.offsetWidth / 2;
+      const centerY = container.offsetHeight / 2;
 
       menuData.forEach((item, index) => {
         const angle = (index * (360 / menuData.length)) * (Math.PI / 180);
@@ -170,34 +175,31 @@
         const menuItem = document.createElement('a');
         menuItem.className = 'menu-item';
         menuItem.href = item.link;
-        menuItem.target = "_blank"; // เปิดลิงก์ในแท็บใหม่
-        menuItem.style.left = `${x - 50}px`;
-        menuItem.style.top = `${y - 50}px`;
+        menuItem.target = "_blank";
+        menuItem.style.left = `${x - container.offsetWidth * 0.075}px`;
+        menuItem.style.top = `${y - container.offsetWidth * 0.075}px`;
         menuItem.innerHTML = `<div style="font-size:24px">${item.number}</div><div style="margin-top:5px">${item.title}</div>`;
-
         menuItems.appendChild(menuItem);
       });
     }
 
-    // หมุนเมนู
     function rotateMenu(angle) {
       currentAngle = angle;
       menuItems.style.transform = `rotate(${currentAngle}deg)`;
 
-      // ปรับตำแหน่งของแต่ละ item ให้หมุนกลับเพื่อให้ข้อความอยู่ในแนวเดิม
       const items = document.querySelectorAll('.menu-item');
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         item.style.transform = `rotate(${-currentAngle}deg)`;
       });
     }
 
-    // กำหนดการทำงานเมื่อลากเมาส์
     let isDragging = false;
     let startAngle = 0;
     let startX = 0;
     let velocity = 0;
     let lastTime = 0;
     let animationId = null;
+    let currentAngle = 0;
 
     centerCircle.addEventListener('mousedown', (e) => {
       isDragging = true;
@@ -205,7 +207,6 @@
       startAngle = currentAngle;
       centerCircle.style.cursor = 'grabbing';
 
-      // หยุด animation ถ้ามี
       if (animationId) {
         cancelAnimationFrame(animationId);
         animationId = null;
@@ -216,91 +217,66 @@
 
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-
       const deltaX = e.clientX - startX;
-      const angleDelta = deltaX * 0.5; // ปรับความเร็วการหมุน
+      const angleDelta = deltaX * 0.5;
 
-      // คำนวณความเร็วสำหรับ momentum
       const now = Date.now();
       const deltaTime = now - lastTime;
-
       if (deltaTime > 0) {
         velocity = (angleDelta - (currentAngle - startAngle)) / deltaTime;
       }
 
       lastTime = now;
-
       rotateMenu(startAngle + angleDelta);
     });
 
-    document.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', () => {
       if (!isDragging) return;
-
       isDragging = false;
       centerCircle.style.cursor = 'grab';
-
-      // เพิ่ม momentum effect เมื่อปล่อยเมาส์
-      if (Math.abs(velocity) > 0.1) {
-        applyMomentum(velocity);
-      }
+      if (Math.abs(velocity) > 0.1) applyMomentum(velocity);
     });
 
-    // เพิ่ม momentum effect ให้หมุนต่อหลังจากปล่อยเมาส์
     function applyMomentum(initialVelocity) {
-      let decay = 0.95; // อัตราการลดลงของความเร็ว
+      let decay = 0.95;
       let velocity = initialVelocity;
       let angle = currentAngle;
 
       const animate = () => {
         if (Math.abs(velocity) < 0.1) return;
-
         velocity *= decay;
-        angle += velocity * 16; // 16ms สำหรับแต่ละเฟรม
-
+        angle += velocity * 16;
         rotateMenu(angle);
-
         animationId = requestAnimationFrame(animate);
       };
-
       animate();
     }
 
-    // หมุนเมนูอัตโนมัติเมื่อโหลดหน้า
     function autoRotate() {
       let angle = 0;
-      const duration = 10000; // 10 วินาที
+      const duration = 10000;
       const startTime = Date.now();
-      
+
       const animate = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
-        // คำนวณมุมด้วย easing function
         angle = 150 * easeOutQuad(progress);
-        
         rotateMenu(angle);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
+        if (progress < 1) requestAnimationFrame(animate);
       };
-      
       animate();
     }
-    
-    // Easing function สำหรับการหมุนที่นุ่มนวล
+
     function easeOutQuad(t) {
       return t * (2 - t);
     }
 
-    // สร้างเมนูครั้งแรก
-    createMenuItems();
-    
-    // เริ่มหมุนอัตโนมัติเมื่อโหลดหน้า
     window.addEventListener('load', () => {
+      createMenuItems();
       autoRotate();
     });
+
+    window.addEventListener('resize', createMenuItems);
   </script>
 </body>
-
 </html>
