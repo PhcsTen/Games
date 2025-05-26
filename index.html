@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,7 +21,6 @@
       background: rgba(255, 255, 255, 0.9);
       padding: 10px 20px;
       border-radius: 20px;
-      text-align: center;
       font-size: 1rem;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin: 10px auto;
@@ -62,17 +60,9 @@
     }
 
     @keyframes pulse {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-      }
-
-      50% {
-        transform: translate(-50%, -50%) scale(1.05);
-      }
-
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-      }
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
     }
 
     .menu-items {
@@ -96,11 +86,11 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #333;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       text-decoration: none;
       transition: transform 0.3s;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
 
     .menu-item:hover {
@@ -110,12 +100,21 @@
 
     .menu-icon {
       font-size: 1.8rem;
+      display: block;
       margin-bottom: 4px;
+    }
+
+    .menu-label {
+      display: block;
+      font-size: 0.75rem;
+      line-height: 1rem;
     }
 
     @media (max-width: 480px) {
       .menu-item {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
+        width: 20vw;
+        height: 20vw;
       }
 
       .menu-icon {
@@ -149,7 +148,7 @@
     ];
 
     const container = document.getElementById("menuItems");
-    const radius = 35; // เปอร์เซ็นต์
+    const radius = 35; // เปอร์เซ็นต์จากศูนย์กลาง
 
     function createMenu() {
       const angleStep = (2 * Math.PI) / menuData.length;
@@ -161,9 +160,13 @@
         const el = document.createElement("a");
         el.className = "menu-item";
         el.href = item.link;
-        el.style.left = `calc(${x}% - 9vw)`; // ตรงกลางไอคอน
+        el.style.left = `calc(${x}% - 9vw)`;
         el.style.top = `calc(${y}% - 9vw)`;
-        el.innerHTML = `<div class="menu-icon">${item.icon}</div>${item.title}`;
+
+        el.innerHTML = `
+          <span class="menu-icon">${item.icon}</span>
+          <span class="menu-label">${item.title}</span>
+        `;
         container.appendChild(el);
       });
     }
