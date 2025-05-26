@@ -241,27 +241,18 @@
             cell.appendChild(span);
           } else {
             const input = document.createElement('input');
-            input.type = 'number';
-            input.min = 1;
-            input.max = 9;
+            input.type = 'text';
+            input.readOnly = true;
             input.dataset.row = i;
             input.dataset.col = j;
 
-            input.addEventListener('focus', () => {
+            input.addEventListener('click', () => {
               selectedInput = input;
-              if (input.value.trim() !== '') {
-                highlightSameNumbers(input.value);
-              } else {
-                highlightSameNumbers(null);
-              }
+              highlightSameNumbers(input.value || null);
             });
 
-            input.addEventListener('input', () => {
-              if (input.value.trim() !== '') {
-                highlightSameNumbers(input.value);
-              } else {
-                highlightSameNumbers(null);
-              }
+            input.addEventListener('focus', e => {
+              e.target.blur(); // ปิดคีย์บอร์ดมือถือ
             });
 
             cell.appendChild(input);
