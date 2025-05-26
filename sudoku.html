@@ -4,40 +4,40 @@
   <meta charset="UTF-8">
   <title>เกมซูโดกุ (Sudoku)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2196f3">
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 10px;
       margin: 0;
-      background: #e3f2fd; /* ฟ้าอ่อน */
+      background: #e3f2fd;
     }
+
     table {
       border-collapse: collapse;
       margin: 10px auto;
+      width: 95vw;
+      max-width: 95vmin;
     }
 
     td {
-      border: 1px solid #90caf9; /* ขอบบางสีฟ้า */
-      width: 10vw;
+      border: 1px solid #90caf9;
+      width: 11vw;
       aspect-ratio: 1 / 1;
-      max-width: 35px;
-      min-width: 28px;
-      font-size: 1.2em;
+      font-size: 5vw;
       text-align: center;
       box-sizing: border-box;
       padding: 0;
       color: #333;
+      position: relative;
     }
 
     input {
       width: 100%;
       height: 100%;
-      font-size: inherit;
+      font-size: 5vw;
       border: none;
       text-align: center;
-      line-height: 1em;
       padding: 0;
       margin: 0;
       background: none;
@@ -46,7 +46,11 @@
 
     input:focus {
       outline: none;
-      background-color: #e1f5fe; /* ฟ้าจาง */
+      background-color: #e1f5fe;
+    }
+
+    .highlight {
+      background-color: #fff9c4 !important;
     }
 
     .thick-top { border-top: 3px solid #1565c0 !important; }
@@ -67,7 +71,6 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
 
     button:hover, select:hover {
@@ -97,17 +100,32 @@
       background-color: #78909c;
     }
 
-    /* สี input ตอบถูก/ผิด */
-    input.correct {
-      background-color: #c8e6c9 !important;
+    input.correct { background-color: #c8e6c9 !important; }
+    input.wrong { background-color: #ffcdd2 !important; }
+    input.solution { background-color: #bbdefb !important; }
+
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 5px;
+      max-width: 95vmin;
+      margin: 15px auto;
     }
 
-    input.wrong {
-      background-color: #ffcdd2 !important;
+    .numpad button {
+      font-size: 20px;
+      padding: 10px 0;
+      background-color: #64b5f6;
     }
 
-    input.solution {
-      background-color: #bbdefb !important;
+    .numpad button:hover {
+      background-color: #42a5f5;
+    }
+
+    @media (min-width: 768px) {
+      td, input {
+        font-size: 2.5vw;
+      }
     }
   </style>
 </head>
@@ -120,19 +138,34 @@
       <option value="40" selected>ปานกลาง</option>
       <option value="50">ยาก</option>
     </select>
-  <br>
+    <br>
     <button onclick="generateAndRender()">เริ่มเกมใหม่</button>
     <button onclick="checkAnswers()">ตรวจคำตอบ</button>
     <button onclick="showSolution()">เฉลย</button>
   </div>
 
   <div id="scoreboard"></div>
-
   <table id="sudoku-board"></table>
+
+  <div class="numpad">
+    <button onclick="insertNumber(1)">1</button>
+    <button onclick="insertNumber(2)">2</button>
+    <button onclick="insertNumber(3)">3</button>
+    <button onclick="insertNumber(4)">4</button>
+    <button onclick="insertNumber(5)">5</button>
+    <button onclick="insertNumber(6)">6</button>
+    <button onclick="insertNumber(7)">7</button>
+    <button onclick="insertNumber(8)">8</button>
+    <button onclick="insertNumber(9)">9</button>
+  </div>
+
+  <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
+  <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
 
   <script>
     let fullBoard = [], puzzleBoard = [];
     let timer = 0, interval;
+    let selectedInput = null;
 
     function isSafe(board, row, col, num) {
       for (let x = 0; x < 9; x++)
@@ -196,7 +229,16 @@
           if (i === 8) cell.classList.add('thick-bottom');
 
           if (puzzleBoard[i][j] !== 0) {
-            cell.textContent = puzzleBoard[i][j];
+            const span = document.createElement('span');
+            span.textContent = puzzleBoard[i][j];
+            span.style.display = 'inline-block';
+            span.style.width = '100%';
+            span.style.height = '100%';
+            span.style.lineHeight = 'inherit';
+            span.addEventListener('click', () => {
+              highlightSameNumbers(span.textContent);
+            });
+            cell.appendChild(span);
           } else {
             const input = document.createElement('input');
             input.type = 'number';
@@ -204,11 +246,50 @@
             input.max = 9;
             input.dataset.row = i;
             input.dataset.col = j;
+
+            input.addEventListener('focus', () => {
+              selectedInput = input;
+              if (input.value.trim() !== '') {
+                highlightSameNumbers(input.value);
+              } else {
+                highlightSameNumbers(null);
+              }
+            });
+
+            input.addEventListener('input', () => {
+              if (input.value.trim() !== '') {
+                highlightSameNumbers(input.value);
+              } else {
+                highlightSameNumbers(null);
+              }
+            });
+
             cell.appendChild(input);
           }
+
           row.appendChild(cell);
         }
         table.appendChild(row);
+      }
+    }
+
+    function highlightSameNumbers(number) {
+      document.querySelectorAll('td').forEach(cell => {
+        cell.classList.remove('highlight');
+        const input = cell.querySelector('input');
+        const span = cell.querySelector('span');
+        if (input && input.value === number) {
+          cell.classList.add('highlight');
+        } else if (span && span.textContent === number) {
+          cell.classList.add('highlight');
+        }
+      });
+    }
+
+    function insertNumber(number) {
+      if (selectedInput) {
+        selectedInput.value = number;
+        highlightSameNumbers(number);
       }
     }
 
@@ -264,18 +345,11 @@
       });
     }
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-
-    generateAndRender();
-
     function goBack() {
       window.location.href = "index.html";
     }
-  </script>
 
-  <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
-  <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
+    generateAndRender();
+  </script>
 </body>
 </html>
