@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 
 <head>
   <meta charset="UTF-8" />
@@ -7,21 +7,32 @@
   <title>เกมเล่นแก้เครียด</title>
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
-      background-color: #dbb4c8;
-      overflow: hidden;
       font-family: 'Prompt', sans-serif;
+      background-color: #d8aac6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .top-menu, .instructions {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 10px auto;
+      text-align: center;
     }
 
     .menu-container {
       position: relative;
       width: 90vw;
-      height: 90vw;
       max-width: 600px;
+      height: 90vw;
       max-height: 600px;
     }
 
@@ -39,27 +50,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1rem;
+      padding: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      z-index: 10;
-      cursor: grab;
       animation: pulse 2s infinite;
+      z-index: 10;
     }
 
     @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.05); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
 
-    .center-circle:active {
-      cursor: grabbing;
-    }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+      }
 
-    .center-text {
-      font-weight: bold;
-      color: #fff;
-      font-size: clamp(14px, 4vw, 20px);
-      text-align: center;
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
 
     .menu-items {
@@ -68,83 +80,56 @@
       height: 100%;
       top: 0;
       left: 0;
-      transition: transform 0.8s cubic-bezier(0.17, 0.67, 0.21, 0.99);
     }
 
     .menu-item {
       position: absolute;
-      width: 15vw;
-      height: 15vw;
+      width: 18vw;
+      height: 18vw;
       max-width: 100px;
       max-height: 100px;
-      background: #e9b2e7;
+      background: #f3c7eb;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: all 0.3s;
-      padding: 5px;
-      box-sizing: border-box;
-      text-decoration: none;
+      font-size: 0.8rem;
       color: #333;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      transition: transform 0.3s;
     }
 
     .menu-item:hover {
-      transform: scale(1.1) !important;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      z-index: 20;
-      background: #f8c6f5;
+      transform: scale(1.1);
+      background: #ffd7fa;
     }
 
-    .menu-item .icon {
-      font-size: clamp(16px, 5vw, 28px);
-      line-height: 1;
+    .menu-icon {
+      font-size: 1.8rem;
+      margin-bottom: 4px;
     }
 
-    .menu-item .label {
-      margin-top: 3px;
-      font-size: clamp(10px, 2vw, 13px);
-    }
+    @media (max-width: 480px) {
+      .menu-item {
+        font-size: 0.7rem;
+      }
 
-    .top-menu {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.8);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: clamp(14px, 4vw, 18px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-    }
-
-    .instructions {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.8);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: clamp(12px, 3vw, 16px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 100;
+      .menu-icon {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
+
   <div class="top-menu">😄 มาเล่นกัน! 🎉</div>
 
   <div class="menu-container">
-    <div class="center-circle" id="centerCircle">
-      <div class="center-text">เกมเล่นแก้เครียด</div>
-    </div>
+    <div class="center-circle">เกมเล่นแก้เครียด</div>
     <div class="menu-items" id="menuItems"></div>
   </div>
 
@@ -152,121 +137,38 @@
 
   <script>
     const menuData = [
-      { number: "💣", title: "เกมวางระเบิด", link: "bomb.html" },
-      { number: "🧠", title: "เกมจับคู่", link: "to_match.html" },
-      { number: "📝", title: "เกมสุภาษิตไทย", link: "questions.html" },
-      { number: "🧩", title: "เกมต่อจิ๊กซอว์", link: "Jigsaw.html" },
-      { number: "🪜🐍", title: "เกมบันไดงู", link: "snakes.html" },
-      { number: "🔢", title: "ซูโดกุ (Sudoku)", link: "sudoku.html" },
-      { number: "🧠", title: "15 เรียงเลข (Puzzle)", link: "puzzle.html" },
-      { number: "🎮", title: "Super Mario", link: "mario.html" },
+      { icon: "💣", title: "เกมวางระเบิด", link: "bomb.html" },
+      { icon: "🧠", title: "เกมจับคู่", link: "to_match.html" },
+      { icon: "📝", title: "เกมสุภาษิตไทย", link: "questions.html" },
+      { icon: "🧩", title: "เกมต่อจิ๊กซอว์", link: "Jigsaw.html" },
+      { icon: "🪜🐍", title: "เกมบันไดงู", link: "snakes.html" },
+      { icon: "🔢", title: "ซูโดกุ (Sudoku)", link: "sudoku.html" },
+      { icon: "🧠", title: "15 เรียงเลข (Puzzle)", link: "puzzle.html" },
+      { icon: "🎮", title: "Super Mario", link: "mario.html" }
     ];
 
-    const menuItems = document.getElementById('menuItems');
-    const centerCircle = document.getElementById('centerCircle');
+    const container = document.getElementById("menuItems");
+    const radius = 35; // เปอร์เซ็นต์
 
-    let currentAngle = 0;
-    const radius = 40 * (Math.min(window.innerWidth, window.innerHeight) / 100); // ทำให้ responsive
-    const centerX = (Math.min(window.innerWidth, 600)) / 2;
-    const centerY = centerX;
-
-    function createMenuItems() {
-      menuItems.innerHTML = '';
+    function createMenu() {
+      const angleStep = (2 * Math.PI) / menuData.length;
       menuData.forEach((item, index) => {
-        const angle = (index * (360 / menuData.length)) * (Math.PI / 180);
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
+        const angle = index * angleStep;
+        const x = 50 + radius * Math.cos(angle);
+        const y = 50 + radius * Math.sin(angle);
 
-        const menuItem = document.createElement('a');
-        menuItem.className = 'menu-item';
-        menuItem.href = item.link;
-        menuItem.target = "_blank";
-        menuItem.style.left = `${x - 50}px`;
-        menuItem.style.top = `${y - 50}px`;
-        menuItem.innerHTML = `
-          <div class="icon">${item.number}</div>
-          <div class="label">${item.title}</div>
-        `;
-
-        menuItems.appendChild(menuItem);
+        const el = document.createElement("a");
+        el.className = "menu-item";
+        el.href = item.link;
+        el.style.left = `calc(${x}% - 9vw)`; // ตรงกลางไอคอน
+        el.style.top = `calc(${y}% - 9vw)`;
+        el.innerHTML = `<div class="menu-icon">${item.icon}</div>${item.title}`;
+        container.appendChild(el);
       });
     }
 
-    function rotateMenu(angle) {
-      currentAngle = angle;
-      menuItems.style.transform = `rotate(${currentAngle}deg)`;
-      document.querySelectorAll('.menu-item').forEach(item => {
-        item.style.transform = `rotate(${-currentAngle}deg)`;
-      });
-    }
-
-    let isDragging = false, startAngle = 0, startX = 0;
-    let velocity = 0, lastTime = 0, animationId = null;
-
-    centerCircle.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX;
-      startAngle = currentAngle;
-      centerCircle.style.cursor = 'grabbing';
-      if (animationId) cancelAnimationFrame(animationId);
-      e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const deltaX = e.clientX - startX;
-      const angleDelta = deltaX * 0.5;
-      const now = Date.now();
-      const deltaTime = now - lastTime;
-      if (deltaTime > 0) velocity = (angleDelta - (currentAngle - startAngle)) / deltaTime;
-      lastTime = now;
-      rotateMenu(startAngle + angleDelta);
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      centerCircle.style.cursor = 'grab';
-      if (Math.abs(velocity) > 0.1) applyMomentum(velocity);
-    });
-
-    function applyMomentum(initialVelocity) {
-      let decay = 0.95;
-      let angle = currentAngle;
-      let velocity = initialVelocity;
-
-      const animate = () => {
-        if (Math.abs(velocity) < 0.1) return;
-        velocity *= decay;
-        angle += velocity * 16;
-        rotateMenu(angle);
-        animationId = requestAnimationFrame(animate);
-      };
-
-      animate();
-    }
-
-    function autoRotate() {
-      let angle = 0;
-      const duration = 10000;
-      const startTime = Date.now();
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        angle = 150 * easeOutQuad(progress);
-        rotateMenu(angle);
-        if (progress < 1) requestAnimationFrame(animate);
-      };
-      animate();
-    }
-
-    function easeOutQuad(t) {
-      return t * (2 - t);
-    }
-
-    createMenuItems();
-    window.addEventListener('load', autoRotate);
+    createMenu();
   </script>
-</body>
 
+</body>
 </html>
