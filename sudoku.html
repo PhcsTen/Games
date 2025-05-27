@@ -10,10 +10,11 @@
       box-sizing: border-box;
     }
 
+    html,
     body {
       font-family: 'Kanit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
-      padding: 10px;
+      padding: 0;
       margin: 0;
       background: linear-gradient(to bottom, #f8e8f8, #f0d8f0);
       min-height: 100vh;
@@ -21,13 +22,14 @@
       flex-direction: column;
       align-items: center;
       color: #333;
+      height: 100%;
     }
 
     h2 {
       color: #5e35b1;
       margin: 10px 0;
       font-size: 1.8rem;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .game-container {
@@ -154,7 +156,7 @@
       background-color: rgba(255, 255, 255, 0.7);
       padding: 8px 16px;
       border-radius: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .footer {
@@ -199,7 +201,7 @@
     }
 
     .numpad button {
-      font-size: 18px;
+      font-size: 16px;
       padding: 12px 0;
       background-color: #9575cd;
       aspect-ratio: 1;
@@ -274,7 +276,7 @@
 
     .congrats h2 {
       color: white;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .congrats button {
@@ -285,13 +287,25 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
     }
 
     .bounce {
@@ -302,21 +316,22 @@
       h2 {
         font-size: 1.5rem;
       }
-      
+
       .controls {
         gap: 6px;
       }
-      
-      button, select {
+
+      button,
+      select {
         padding: 8px 12px;
         font-size: 14px;
       }
-      
+
       .numpad button {
         font-size: 16px;
         padding: 10px 0;
       }
-      
+
       .numpad-del button {
         font-size: 16px;
         padding: 8px 12px;
@@ -328,7 +343,7 @@
         width: 80vmin;
         height: 80vmin;
       }
-      
+
       input {
         font-size: calc(min(5vmin, 28px));
       }
@@ -343,7 +358,7 @@
 
     <div class="controls">
       <select id="difficulty" onchange="generateAndRender()">
-        <option value="30"selected>ง่าย</option>
+        <option value="30" selected>ง่าย</option>
         <option value="40">ปานกลาง</option>
         <option value="50">ยาก</option>
         <option value="55">มืออาชีพ</option>
@@ -356,7 +371,7 @@
     </div>
 
     <div id="scoreboard"></div>
-    
+
     <div class="sudoku-wrapper">
       <table id="sudoku-board"></table>
     </div>
@@ -457,7 +472,7 @@
       for (let x = 0; x < 9; x++) {
         if (board[row][x] === num || board[x][col] === num) return false;
       }
-      
+
       // ตรวจสอบกล่อง 3x3
       const startRow = row - row % 3;
       const startCol = col - col % 3;
@@ -488,12 +503,12 @@
     function renderBoard(puzzleBoard) {
       const table = document.getElementById('sudoku-board');
       table.innerHTML = '';
-      
+
       for (let i = 0; i < 9; i++) {
         const row = document.createElement('tr');
         for (let j = 0; j < 9; j++) {
           const cell = document.createElement('td');
-          
+
           // เพิ่มเส้นขอบหนา
           if (i % 3 === 0) cell.classList.add('thick-top');
           if (j % 3 === 0) cell.classList.add('thick-left');
@@ -534,7 +549,7 @@
         }
         table.appendChild(row);
       }
-      
+
       adjustTableSize();
     }
 
@@ -552,7 +567,7 @@
         cell.classList.remove('highlight');
         const input = cell.querySelector('input');
         const span = cell.querySelector('span');
-        
+
         if (number && ((input && input.value === number) || (span && span.textContent === number))) {
           cell.classList.add('highlight');
         }
@@ -562,9 +577,9 @@
     // ใส่ตัวเลขหรือตัวทด
     function insertNumber(number) {
       if (!selectedInput || gameCompleted) return;
-      
+
       const cell = selectedInput.parentElement;
-      
+
       if (number === 0) {
         // ลบค่า
         selectedInput.value = '';
@@ -595,12 +610,12 @@
           newNote.textContent = number;
           notesGrid.appendChild(newNote);
         }
-        
+
         // เรียงลำดับตัวทดใหม่
         const notes = Array.from(notesGrid.children)
           .map(n => parseInt(n.dataset.num))
           .sort((a, b) => a - b);
-          
+
         notesGrid.innerHTML = '';
         notes.forEach(n => {
           const noteEl = document.createElement('div');
@@ -616,7 +631,7 @@
         const notesGrid = cell.querySelector('.notes-grid');
         if (notesGrid) notesGrid.remove();
         highlightSameNumbers(number);
-        
+
         // ตรวจสอบความถูกต้องอัตโนมัติ
         const row = parseInt(selectedInput.dataset.row);
         const col = parseInt(selectedInput.dataset.col);
@@ -627,11 +642,11 @@
             selectedInput.classList.remove("bounce");
           }, 300);
         }
-        
+
         // ตรวจสอบว่าเกมเสร็จสิ้นหรือยัง
         checkCompletion();
       }
-      
+
       saveGame();
     }
 
@@ -639,17 +654,17 @@
     function checkCompletion() {
       const inputs = document.querySelectorAll('input');
       let complete = true;
-      
+
       inputs.forEach(input => {
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
         const val = input.value;
-        
+
         if (!val || parseInt(val) !== fullBoard[row][col]) {
           complete = false;
         }
       });
-      
+
       if (complete) {
         gameCompleted = true;
         clearInterval(interval);
@@ -674,16 +689,16 @@
     // ตรวจคำตอบ
     function checkAnswers() {
       if (gameCompleted) return;
-      
+
       const inputs = document.querySelectorAll('input');
       let correct = 0;
-      
+
       inputs.forEach(input => {
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
         const val = input.value;
         input.classList.remove("correct", "wrong");
-        
+
         if (val) {
           if (parseInt(val) === fullBoard[row][col]) {
             input.classList.add("correct");
@@ -693,9 +708,9 @@
           }
         }
       });
-      
+
       document.getElementById('score').textContent = correct;
-      
+
       if (correct === inputs.length) {
         gameCompleted = true;
         clearInterval(interval);
@@ -706,7 +721,7 @@
     // แสดงเฉลย
     function showSolution() {
       if (gameCompleted) return;
-      
+
       document.querySelectorAll('input').forEach(input => {
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
@@ -714,7 +729,7 @@
         input.classList.remove("correct", "wrong");
         input.classList.add("solution");
       });
-      
+
       gameCompleted = true;
       clearInterval(interval);
     }
@@ -725,15 +740,15 @@
         alert("กรุณาเลือกเซลล์ที่ต้องการคำใบ้");
         return;
       }
-      
+
       const row = parseInt(selectedInput.dataset.row);
       const col = parseInt(selectedInput.dataset.col);
-      
+
       if (selectedInput.value && parseInt(selectedInput.value) === fullBoard[row][col]) {
         alert("เซลล์นี้ถูกต้องแล้ว!");
         return;
       }
-      
+
       selectedInput.value = fullBoard[row][col];
       selectedInput.classList.remove("wrong");
       selectedInput.classList.add("solution");
@@ -745,12 +760,12 @@
     function adjustTableSize() {
       const table = document.getElementById('sudoku-board');
       const cells = table.querySelectorAll('td');
-      
+
       if (cells.length === 0) return;
-      
+
       const cellSize = table.offsetWidth / 9;
       const fontSize = Math.min(cellSize * 0.6, 36);
-      
+
       cells.forEach(cell => {
         const content = cell.querySelector('span, input');
         if (content) {
@@ -784,7 +799,7 @@
         difficulty: document.getElementById('difficulty').value,
         inputs: []
       };
-      
+
       document.querySelectorAll('input').forEach(input => {
         gameState.inputs.push({
           row: input.dataset.row,
@@ -793,7 +808,7 @@
           class: input.className
         });
       });
-      
+
       localStorage.setItem('sudokuGame', JSON.stringify(gameState));
     }
 
@@ -801,15 +816,15 @@
     function loadGame() {
       const savedGame = localStorage.getItem('sudokuGame');
       if (!savedGame) return;
-      
+
       const gameState = JSON.parse(savedGame);
       fullBoard = gameState.fullBoard;
       puzzleBoard = gameState.puzzleBoard;
       timer = gameState.timer;
       document.getElementById('difficulty').value = gameState.difficulty;
-      
+
       renderBoard(puzzleBoard);
-      
+
       gameState.inputs.forEach(inputState => {
         const input = document.querySelector(`input[data-row="${inputState.row}"][data-col="${inputState.col}"]`);
         if (input) {
@@ -817,10 +832,10 @@
           input.className = inputState.class;
         }
       });
-      
+
       document.getElementById('timer').textContent = formatTime(timer);
       updateScoreboard();
-      
+
       // เริ่มนับเวลาต่อ
       clearInterval(interval);
       interval = setInterval(() => {
