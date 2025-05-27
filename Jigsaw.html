@@ -39,7 +39,8 @@
 
     #preview {
       width: 160px;
-      height: auto;
+      height: 160px;
+      object-fit: cover;
       margin-bottom: 10px;
       border: 2px solid #ccc;
       border-radius: 10px;
@@ -91,6 +92,9 @@
   <img id="preview" src="" alt="ภาพตัวอย่าง">
   <div class="puzzle-container" id="puzzle"></div>
 
+  <button class="btn-back" onclick="goBack()">กลับเมนูหลัก</button>
+  <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
+
   <script>
     const puzzle = document.getElementById('puzzle');
     const preview = document.getElementById('preview');
@@ -98,7 +102,6 @@
     const pieceSize = 80;
     let pieces = [];
 
-    // ตัวแปรจับเวลา
     let seconds = 0;
     let timerInterval = null;
 
@@ -131,7 +134,6 @@
     const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
     preview.src = randomImage;
 
-    // สร้างชิ้นจิ๊กซอว์
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const piece = document.createElement('div');
@@ -152,7 +154,6 @@
     function makeDraggable(el) {
       let offsetX, offsetY, isDragging = false;
 
-      // Mouse
       el.addEventListener('mousedown', e => {
         isDragging = true;
         offsetX = e.offsetX;
@@ -176,7 +177,6 @@
         }
       });
 
-      // Touch
       el.addEventListener('touchstart', e => {
         isDragging = true;
         const touch = e.touches[0];
@@ -234,11 +234,5 @@
       window.location.href = "index.html";
     }
   </script>
-
-  <button class="btn-back" onclick="goBack()">กลับเมนูหลัก</button>
-  <div class="footer">
-     © 2025 | เล่นคลายง่วงด้วยกันนะ!
-  </div>
-
 </body>
 </html>
