@@ -7,11 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       padding: 10px;
       margin: 0;
       background: linear-gradient(to bottom, #fce4ec, #f8bbd0);
+      min-height: 100vh;
+    }
+
+    h2 {
+      color: #0d47a1;
+      margin-bottom: 15px;
     }
 
     table {
@@ -19,6 +25,7 @@
       margin: 10px auto;
       width: 95vw;
       max-width: 95vmin;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     td {
@@ -31,6 +38,7 @@
       padding: 0;
       color: #333;
       position: relative;
+      transition: background-color 0.3s;
     }
 
     input {
@@ -43,6 +51,8 @@
       margin: 0;
       background: none;
       color: #0d47a1;
+      font-weight: bold;
+      caret-color: transparent;
     }
 
     input.selected {
@@ -76,12 +86,16 @@
     }
 
     .controls {
-      margin-top: 10px;
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }
 
     button,
     select {
-      margin: 5px;
+      margin: 0;
       padding: 10px 16px;
       font-size: 16px;
       background-color: #2196f3;
@@ -89,17 +103,26 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     button:hover,
     select:hover {
       background-color: #1976d2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     #scoreboard {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 1.2em;
       color: #0d47a1;
+      font-weight: bold;
     }
 
     .footer {
@@ -121,14 +144,17 @@
 
     input.correct {
       background-color: #c8e6c9 !important;
+      color: #2e7d32;
     }
 
     input.wrong {
       background-color: #ffcdd2 !important;
+      color: #c62828;
     }
 
     input.solution {
       background-color: #bbdefb !important;
+      color: #1565c0;
     }
 
     .numpad {
@@ -155,6 +181,7 @@
       align-items: center;
       margin: 15px auto;
       max-width: 95vmin;
+      gap: 10px;
     }
 
     .numpad-del button {
@@ -164,17 +191,101 @@
       border: none;
       border-radius: 5px;
       color: white;
+      flex: 1;
+      max-width: 200px;
     }
 
     .numpad-del button:hover {
-      background-color: #42a5f5;
+      background-color: #f5a742;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 1px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .note {
+      font-size: 0.3em;
+      text-align: center;
+      color: #ee0707;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: normal;
+    }
+
+    .note-numpad {
+      display: none;
+    }
+
+    .congrats {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      color: white;
+      font-size: 2em;
+      animation: fadeIn 0.5s;
+    }
+
+    .congrats button {
+      margin-top: 20px;
+      font-size: 1em;
+      padding: 12px 24px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .bounce {
+      animation: bounce 0.3s;
     }
 
     @media (min-width: 768px) {
+      td {
+        font-size: 2.5vw;
+      }
 
-      td,
       input {
         font-size: 2.5vw;
+      }
+
+      .note {
+        font-size: 0.7em;
+      }
+    }
+
+    @media (min-width: 992px) {
+      td {
+        font-size: 1.8vw;
+      }
+
+      input {
+        font-size: 1.8vw;
       }
     }
   </style>
@@ -188,11 +299,13 @@
       <option value="30">ง่าย</option>
       <option value="40" selected>ปานกลาง</option>
       <option value="50">ยาก</option>
+      <option value="55">มืออาชีพ</option>
     </select>
-    <br>
+
     <button onclick="generateAndRender()">เริ่มเกมใหม่</button>
     <button onclick="checkAnswers()">ตรวจคำตอบ</button>
     <button onclick="showSolution()">เฉลย</button>
+    <button onclick="showHint()">คำใบ้</button>
   </div>
 
   <div id="scoreboard"></div>
@@ -210,11 +323,10 @@
     <button onclick="insertNumber(9)">9</button>
   </div>
 
-
   <div class="numpad-del">
-    <button onclick="insertNumber(0)">ลบ</button> <!-- ปุ่มลบ -->
+    <button onclick="insertNumber(0)">ลบ</button>
+    <button onclick="toggleNoteMode()">โหมดตัวทด: <span id="note-status">ปิด</span></button>
   </div>
-
 
   <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
@@ -223,17 +335,50 @@
     let fullBoard = [], puzzleBoard = [];
     let timer = 0, interval;
     let selectedInput = null;
+    let noteMode = false;
+    let gameCompleted = false;
 
-    function isSafe(board, row, col, num) {
-      for (let x = 0; x < 9; x++)
-        if (board[row][x] === num || board[x][col] === num) return false;
-      const startRow = row - row % 3, startCol = col - col % 3;
-      for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-          if (board[i + startRow][j + startCol] === num) return false;
-      return true;
+    // ฟังก์ชันเริ่มต้นเกม
+    function initGame() {
+      generateAndRender();
+      loadGame();
     }
 
+    // สร้างและแสดงกระดาน
+    function generateAndRender() {
+      clearInterval(interval);
+      timer = 0;
+      gameCompleted = false;
+      updateScoreboard();
+
+      const difficulty = parseInt(document.getElementById('difficulty').value);
+      fullBoard = generateSudokuBoard();
+      puzzleBoard = removeCells(fullBoard, difficulty);
+      renderBoard(puzzleBoard);
+
+      interval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = formatTime(timer);
+      }, 1000);
+
+      saveGame();
+    }
+
+    // จัดรูปแบบเวลา
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // สร้างกระดานซูโดกุ
+    function generateSudokuBoard() {
+      const board = Array.from({ length: 9 }, () => Array(9).fill(0));
+      solveSudoku(board);
+      return board;
+    }
+
+    // แก้ปัญหาซูโดกุ
     function solveSudoku(board) {
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
@@ -253,12 +398,25 @@
       return true;
     }
 
-    function generateSudokuBoard() {
-      const board = Array.from({ length: 9 }, () => Array(9).fill(0));
-      solveSudoku(board);
-      return board;
+    // ตรวจสอบความปลอดภัยของตัวเลข
+    function isSafe(board, row, col, num) {
+      // ตรวจสอบแถวและคอลัมน์
+      for (let x = 0; x < 9; x++) {
+        if (board[row][x] === num || board[x][col] === num) return false;
+      }
+      
+      // ตรวจสอบกล่อง 3x3
+      const startRow = row - row % 3;
+      const startCol = col - col % 3;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (board[i + startRow][j + startCol] === num) return false;
+        }
+      }
+      return true;
     }
 
+    // ลบเซลล์ตามระดับความยาก
     function removeCells(board, difficulty) {
       const newBoard = board.map(row => [...row]);
       let count = 0;
@@ -273,19 +431,24 @@
       return newBoard;
     }
 
+    // แสดงกระดาน
     function renderBoard(puzzleBoard) {
       const table = document.getElementById('sudoku-board');
       table.innerHTML = '';
+      
       for (let i = 0; i < 9; i++) {
         const row = document.createElement('tr');
         for (let j = 0; j < 9; j++) {
           const cell = document.createElement('td');
+          
+          // เพิ่มเส้นขอบหนา
           if (i % 3 === 0) cell.classList.add('thick-top');
           if (j % 3 === 0) cell.classList.add('thick-left');
           if (j === 8) cell.classList.add('thick-right');
           if (i === 8) cell.classList.add('thick-bottom');
 
           if (puzzleBoard[i][j] !== 0) {
+            // เซลล์ที่กำหนดค่าไว้แล้ว
             const span = document.createElement('span');
             span.textContent = puzzleBoard[i][j];
             span.style.display = 'inline-block';
@@ -297,22 +460,17 @@
             });
             cell.appendChild(span);
           } else {
+            // เซลล์ที่ผู้ใช้ต้องเติม
             const input = document.createElement('input');
             input.type = 'text';
             input.readOnly = true;
             input.dataset.row = i;
             input.dataset.col = j;
+            input.maxLength = 1;
+            input.inputMode = 'numeric';
 
-            input.addEventListener('click', () => {
-              document.querySelectorAll('input').forEach(inp => inp.classList.remove('selected'));
-              input.classList.add('selected');
-              selectedInput = input;
-              highlightSameNumbers(input.value || null);
-            });
-
-            input.addEventListener('focus', e => {
-              e.target.blur(); // ปิดคีย์บอร์ดมือถือ
-            });
+            input.addEventListener('click', handleCellClick);
+            input.addEventListener('focus', e => e.target.blur());
 
             cell.appendChild(input);
           }
@@ -323,75 +481,175 @@
       }
     }
 
+    // จัดการการคลิกเซลล์
+    function handleCellClick(e) {
+      document.querySelectorAll('input').forEach(inp => inp.classList.remove('selected'));
+      this.classList.add('selected');
+      selectedInput = this;
+      highlightSameNumbers(this.value || null);
+    }
+
+    // ไฮไลต์ตัวเลขเดียวกัน
     function highlightSameNumbers(number) {
       document.querySelectorAll('td').forEach(cell => {
         cell.classList.remove('highlight');
         const input = cell.querySelector('input');
         const span = cell.querySelector('span');
-        if (input && input.value === number) {
-          cell.classList.add('highlight');
-        } else if (span && span.textContent === number) {
+        
+        if (number && ((input && input.value === number) || (span && span.textContent === number))) {
           cell.classList.add('highlight');
         }
       });
     }
 
+    // ใส่ตัวเลขหรือตัวทด
     function insertNumber(number) {
-      if (selectedInput) {
-        if (number === 0) {
-          selectedInput.value = '';
-          selectedInput.classList.remove("correct", "wrong", "solution");
-          highlightSameNumbers(null);
-        } else {
-          selectedInput.value = number;
-          highlightSameNumbers(number);
-        }
+      if (!selectedInput || gameCompleted) return;
+      
+      const cell = selectedInput.parentElement;
+      
+      if (number === 0) {
+        // ลบค่า
+        selectedInput.value = '';
+        selectedInput.classList.remove("correct", "wrong", "solution");
+        const notesGrid = cell.querySelector('.notes-grid');
+        if (notesGrid) notesGrid.remove();
+        highlightSameNumbers(null);
+        saveGame();
+        return;
       }
+
+      if (noteMode) {
+        // โหมดตัวทด
+        let notesGrid = cell.querySelector('.notes-grid');
+        if (!notesGrid) {
+          notesGrid = document.createElement('div');
+          notesGrid.className = 'notes-grid';
+          cell.appendChild(notesGrid);
+        }
+
+        const existingNote = notesGrid.querySelector(`.note[data-num="${number}"]`);
+        if (existingNote) {
+          existingNote.remove();
+        } else {
+          const newNote = document.createElement('div');
+          newNote.className = 'note';
+          newNote.dataset.num = number;
+          newNote.textContent = number;
+          notesGrid.appendChild(newNote);
+        }
+        
+        // เรียงลำดับตัวทดใหม่
+        const notes = Array.from(notesGrid.children)
+          .map(n => parseInt(n.dataset.num))
+          .sort((a, b) => a - b);
+          
+        notesGrid.innerHTML = '';
+        notes.forEach(n => {
+          const noteEl = document.createElement('div');
+          noteEl.className = 'note';
+          noteEl.dataset.num = n;
+          noteEl.textContent = n;
+          notesGrid.appendChild(noteEl);
+        });
+      } else {
+        // โหมดปกติ
+        selectedInput.value = number;
+        selectedInput.classList.remove("correct", "wrong", "solution");
+        const notesGrid = cell.querySelector('.notes-grid');
+        if (notesGrid) notesGrid.remove();
+        highlightSameNumbers(number);
+        
+        // ตรวจสอบความถูกต้องอัตโนมัติ
+        const row = parseInt(selectedInput.dataset.row);
+        const col = parseInt(selectedInput.dataset.col);
+        if (parseInt(number) === fullBoard[row][col]) {
+          selectedInput.classList.add("correct");
+          selectedInput.classList.add("bounce");
+          setTimeout(() => {
+            selectedInput.classList.remove("bounce");
+          }, 300);
+        }
+        
+        // ตรวจสอบว่าเกมเสร็จสิ้นหรือยัง
+        checkCompletion();
+      }
+      
+      saveGame();
     }
 
-    function updateScoreboard() {
-      const level = document.getElementById('difficulty').selectedOptions[0].text;
-      document.getElementById('scoreboard').innerHTML =
-        `ระดับ: ${level} |
-         ⏱️ เวลา: <span id="timer">${timer}</span> วินาที |
-         ✅ คะแนน: <span id="score">0</span> / 81`;
-    }
-
-    function generateAndRender() {
-      clearInterval(interval);
-      timer = 0;
-      updateScoreboard();
-
-      const difficulty = parseInt(document.getElementById('difficulty').value);
-      fullBoard = generateSudokuBoard();
-      puzzleBoard = removeCells(fullBoard, difficulty);
-      renderBoard(puzzleBoard);
-
-      interval = setInterval(() => {
-        timer++;
-        document.getElementById('timer').textContent = timer;
-      }, 1000);
-    }
-
-    function checkAnswers() {
+    // ตรวจสอบว่าเกมเสร็จสิ้นแล้วหรือไม่
+    function checkCompletion() {
       const inputs = document.querySelectorAll('input');
-      let correct = 0;
+      let complete = true;
+      
       inputs.forEach(input => {
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
-        const val = parseInt(input.value);
-        input.classList.remove("correct", "wrong");
-        if (val === fullBoard[row][col]) {
-          input.classList.add("correct");
-          correct++;
-        } else {
-          input.classList.add("wrong");
+        const val = input.value;
+        
+        if (!val || parseInt(val) !== fullBoard[row][col]) {
+          complete = false;
         }
       });
-      document.getElementById('score').textContent = correct;
+      
+      if (complete) {
+        gameCompleted = true;
+        clearInterval(interval);
+        showCongrats();
+      }
     }
 
+    // แสดงข้อความยินดีเมื่อเสร็จสิ้น
+    function showCongrats() {
+      const congratsDiv = document.createElement('div');
+      congratsDiv.className = 'congrats';
+      congratsDiv.innerHTML = `
+        <h2>ยินดีด้วย!</h2>
+        <p>คุณแก้ปริศนาซูโดกุสำเร็จแล้ว</p>
+        <p>เวลา: ${formatTime(timer)}</p>
+        <p>ระดับความยาก: ${document.getElementById('difficulty').selectedOptions[0].text}</p>
+        <button onclick="this.parentElement.remove(); generateAndRender()">เล่นอีกครั้ง</button>
+      `;
+      document.body.appendChild(congratsDiv);
+    }
+
+    // ตรวจคำตอบ
+    function checkAnswers() {
+      if (gameCompleted) return;
+      
+      const inputs = document.querySelectorAll('input');
+      let correct = 0;
+      
+      inputs.forEach(input => {
+        const row = parseInt(input.dataset.row);
+        const col = parseInt(input.dataset.col);
+        const val = input.value;
+        input.classList.remove("correct", "wrong");
+        
+        if (val) {
+          if (parseInt(val) === fullBoard[row][col]) {
+            input.classList.add("correct");
+            correct++;
+          } else {
+            input.classList.add("wrong");
+          }
+        }
+      });
+      
+      document.getElementById('score').textContent = correct;
+      
+      if (correct === inputs.length) {
+        gameCompleted = true;
+        clearInterval(interval);
+        showCongrats();
+      }
+    }
+
+    // แสดงเฉลย
     function showSolution() {
+      if (gameCompleted) return;
+      
       document.querySelectorAll('input').forEach(input => {
         const row = parseInt(input.dataset.row);
         const col = parseInt(input.dataset.col);
@@ -399,13 +657,112 @@
         input.classList.remove("correct", "wrong");
         input.classList.add("solution");
       });
+      
+      gameCompleted = true;
+      clearInterval(interval);
     }
 
+    // แสดงคำใบ้
+    function showHint() {
+      if (!selectedInput || gameCompleted) {
+        alert("กรุณาเลือกเซลล์ที่ต้องการคำใบ้");
+        return;
+      }
+      
+      const row = parseInt(selectedInput.dataset.row);
+      const col = parseInt(selectedInput.dataset.col);
+      
+      if (selectedInput.value && parseInt(selectedInput.value) === fullBoard[row][col]) {
+        alert("เซลล์นี้ถูกต้องแล้ว!");
+        return;
+      }
+      
+      selectedInput.value = fullBoard[row][col];
+      selectedInput.classList.remove("wrong");
+      selectedInput.classList.add("solution");
+      saveGame();
+      checkCompletion();
+    }
+
+    // สลับโหมดตัวทด
+    function toggleNoteMode() {
+      noteMode = !noteMode;
+      document.getElementById('note-status').textContent = noteMode ? "เปิด" : "ปิด";
+    }
+
+    // อัปเดตกระดานคะแนน
+    function updateScoreboard() {
+      const level = document.getElementById('difficulty').selectedOptions[0].text;
+      document.getElementById('scoreboard').innerHTML = `
+        ระดับ: ${level} | 
+        ⏱️ เวลา: <span id="timer">0:00</span> | 
+        ✅ คะแนน: <span id="score">0</span> / 81
+      `;
+    }
+
+    // บันทึกเกมปัจจุบัน
+    function saveGame() {
+      const gameState = {
+        fullBoard: fullBoard,
+        puzzleBoard: puzzleBoard,
+        timer: timer,
+        difficulty: document.getElementById('difficulty').value,
+        inputs: []
+      };
+      
+      document.querySelectorAll('input').forEach(input => {
+        gameState.inputs.push({
+          row: input.dataset.row,
+          col: input.dataset.col,
+          value: input.value,
+          class: input.className
+        });
+      });
+      
+      localStorage.setItem('sudokuGame', JSON.stringify(gameState));
+    }
+
+    // โหลดเกมที่บันทึกไว้
+    function loadGame() {
+      const savedGame = localStorage.getItem('sudokuGame');
+      if (!savedGame) return;
+      
+      const gameState = JSON.parse(savedGame);
+      fullBoard = gameState.fullBoard;
+      puzzleBoard = gameState.puzzleBoard;
+      timer = gameState.timer;
+      document.getElementById('difficulty').value = gameState.difficulty;
+      
+      renderBoard(puzzleBoard);
+      
+      gameState.inputs.forEach(inputState => {
+        const input = document.querySelector(`input[data-row="${inputState.row}"][data-col="${inputState.col}"]`);
+        if (input) {
+          input.value = inputState.value;
+          input.className = inputState.class;
+        }
+      });
+      
+      document.getElementById('timer').textContent = formatTime(timer);
+      updateScoreboard();
+      
+      // เริ่มนับเวลาต่อ
+      clearInterval(interval);
+      interval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = formatTime(timer);
+      }, 1000);
+    }
+
+    // กลับสู่เมนูหลัก
     function goBack() {
-      window.location.href = "index.html";
+      if (confirm("คุณต้องการออกจากเกมนี้หรือไม่? ความคืบหน้าจะถูกบันทึกไว้")) {
+        window.location.href = "index.html";
+      }
     }
 
-    generateAndRender();
+    // เริ่มเกมเมื่อโหลดหน้า
+    window.onload = initGame;
   </script>
 </body>
 
