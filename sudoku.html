@@ -149,6 +149,27 @@
       background-color: #42a5f5;
     }
 
+    .numpad-del {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px auto;
+      max-width: 95vmin;
+    }
+
+    .numpad-del button {
+      font-size: 20px;
+      padding: 10px 30px;
+      background-color: #f6b264;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .numpad-del button:hover {
+      background-color: #42a5f5;
+    }
+
     @media (min-width: 768px) {
 
       td,
@@ -188,6 +209,12 @@
     <button onclick="insertNumber(8)">8</button>
     <button onclick="insertNumber(9)">9</button>
   </div>
+
+
+  <div class="numpad-del">
+    <button onclick="insertNumber(0)">ลบ</button> <!-- ปุ่มลบ -->
+  </div>
+
 
   <button class="btn-back" onclick="goBack()">← กลับเมนูหลัก</button>
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
@@ -311,8 +338,14 @@
 
     function insertNumber(number) {
       if (selectedInput) {
-        selectedInput.value = number;
-        highlightSameNumbers(number);
+        if (number === 0) {
+          selectedInput.value = '';
+          selectedInput.classList.remove("correct", "wrong", "solution");
+          highlightSameNumbers(null);
+        } else {
+          selectedInput.value = number;
+          highlightSameNumbers(number);
+        }
       }
     }
 
