@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <title>เกมซูโดกุ (Sudoku)</title>
@@ -10,7 +11,7 @@
       text-align: center;
       padding: 10px;
       margin: 0;
-      background: #e3f2fd;
+      background: linear-gradient(to bottom, #fce4ec, #f8bbd0);
     }
 
     table {
@@ -44,6 +45,11 @@
       color: #0d47a1;
     }
 
+    input.selected {
+      box-shadow: 0 0 6px rgba(86, 5, 236, 0.6);
+      border-radius: 5px;
+    }
+
     input:focus {
       outline: none;
       background-color: #e1f5fe;
@@ -53,16 +59,28 @@
       background-color: #fff9c4 !important;
     }
 
-    .thick-top { border-top: 3px solid #1565c0 !important; }
-    .thick-left { border-left: 3px solid #1565c0 !important; }
-    .thick-right { border-right: 3px solid #1565c0 !important; }
-    .thick-bottom { border-bottom: 3px solid #1565c0 !important; }
+    .thick-top {
+      border-top: 3px solid #1565c0 !important;
+    }
+
+    .thick-left {
+      border-left: 3px solid #1565c0 !important;
+    }
+
+    .thick-right {
+      border-right: 3px solid #1565c0 !important;
+    }
+
+    .thick-bottom {
+      border-bottom: 3px solid #1565c0 !important;
+    }
 
     .controls {
       margin-top: 10px;
     }
 
-    button, select {
+    button,
+    select {
       margin: 5px;
       padding: 10px 16px;
       font-size: 16px;
@@ -73,7 +91,8 @@
       cursor: pointer;
     }
 
-    button:hover, select:hover {
+    button:hover,
+    select:hover {
       background-color: #1976d2;
     }
 
@@ -100,9 +119,17 @@
       background-color: #78909c;
     }
 
-    input.correct { background-color: #c8e6c9 !important; }
-    input.wrong { background-color: #ffcdd2 !important; }
-    input.solution { background-color: #bbdefb !important; }
+    input.correct {
+      background-color: #c8e6c9 !important;
+    }
+
+    input.wrong {
+      background-color: #ffcdd2 !important;
+    }
+
+    input.solution {
+      background-color: #bbdefb !important;
+    }
 
     .numpad {
       display: grid;
@@ -123,12 +150,15 @@
     }
 
     @media (min-width: 768px) {
-      td, input {
+
+      td,
+      input {
         font-size: 2.5vw;
       }
     }
   </style>
 </head>
+
 <body>
   <h2>เกมซูโดกุ (Sudoku)</h2>
 
@@ -181,7 +211,7 @@
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
           if (board[row][col] === 0) {
-            const nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
+            const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
             for (const num of nums) {
               if (isSafe(board, row, col, num)) {
                 board[row][col] = num;
@@ -247,6 +277,8 @@
             input.dataset.col = j;
 
             input.addEventListener('click', () => {
+              document.querySelectorAll('input').forEach(inp => inp.classList.remove('selected'));
+              input.classList.add('selected');
               selectedInput = input;
               highlightSameNumbers(input.value || null);
             });
@@ -343,4 +375,5 @@
     generateAndRender();
   </script>
 </body>
+
 </html>
