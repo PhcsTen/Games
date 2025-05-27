@@ -33,8 +33,8 @@
     }
 
     #preview {
-      width: calc(var(--puzzle-size) / 3);
-      height: calc(var(--puzzle-size) / 3);
+      width: calc(var(--puzzle-size) / 2.5);
+      height: calc(var(--puzzle-size) / 2.5);
       object-fit: cover;
       border: 2px solid #ccc;
       border-radius: 10px;
@@ -109,11 +109,17 @@
     let seconds = 0;
     let timerInterval = null;
 
-    const imageUrls = [
+     const imageUrls = [
       "https://picsum.photos/id/1011/320/320",
       "https://picsum.photos/id/1025/320/320",
       "https://picsum.photos/id/1033/320/320",
-      "https://picsum.photos/id/1043/320/320"
+      "https://picsum.photos/id/1043/320/320",
+      "https://picsum.photos/id/1050/320/320",
+      "https://picsum.photos/id/1062/320/320",
+      "https://picsum.photos/id/1074/320/320",
+      "https://picsum.photos/id/1084/320/320",
+      "https://picsum.photos/id/1081/320/320",
+      "https://picsum.photos/id/1020/320/320"
     ];
 
     const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
