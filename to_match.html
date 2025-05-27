@@ -25,11 +25,11 @@
 
     .game-board {
       display: grid;
-      grid-template-columns: repeat(5, 1fr); /* แก้ตรงนี้ให้เป็น 5 คอลัมน์ */
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       grid-gap: 15px;
       justify-content: center;
       margin-top: 20px;
-      max-width: 600px;
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -90,7 +90,7 @@
       .game-board {
         max-width: 340px;
         grid-gap: 10px;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
       }
     }
   </style>
@@ -110,8 +110,8 @@
   </div>
 
   <script>
-    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍒', '🍏', '🥭', '🥑', '🥕']; // 15 แบบ
-    const emojis = [...baseEmojis, ...baseEmojis]; // รวมเป็น 30 ใบ
+    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍒', '🍏', '🥭', '🥑', '🥕'];
+    const emojis = [...baseEmojis, ...baseEmojis];
     let shuffled = emojis.sort(() => 0.5 - Math.random());
 
     const board = document.getElementById('gameBoard');
@@ -142,7 +142,7 @@
           matchedCount += 2;
 
           if (matchedCount === emojis.length) {
-            clearInterval(countdown);
+            clearInterval(countdown); // หยุดจับเวลาเมื่อชนะ
             setTimeout(() => alert("🎉 ชนะแล้ว! สุดยอดเลย!"), 300);
           }
         } else {
@@ -157,6 +157,7 @@
       }
     }
 
+    // จับเวลาถอยหลัง 2 นาที
     let totalTime = 120;
     const timerDisplay = document.getElementById('timer');
 
@@ -169,7 +170,7 @@
       if (totalTime < 0) {
         clearInterval(countdown);
         alert("⏰ หมดเวลา! ลองใหม่อีกครั้งนะ");
-        location.reload();
+        location.reload(); // หรือใช้ window.location.href = 'index.html';
       }
     }, 1000);
   </script>
