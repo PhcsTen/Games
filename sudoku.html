@@ -176,10 +176,27 @@
       background-color: #757575;
     }
 
-    input.correct {
+    /* ตัวอักษณ */
+    /* input.correct {
+      background-color: #757575;
+      /* หรือ transparent ก็ได้ */
+      /* color: #6a1b9a !important; */
+      /* ม่วงเข้มแบบปกติ */
+      /* box-shadow: 0 0 5px #ba68c8 !important; */
+      /* เงาม่วง */
+      /* outline: none !important; */
+      /* font-weight: bold; */
+    /* } */ 
+
+    /* input.correct:focus {
+      box-shadow: none !important;
+      outline: none !important;
+    } */
+
+    /* input.correct {
       background-color: #c8e6c9 !important;
       color: #2e7d32;
-    }
+    } */
 
     input.wrong {
       background-color: #ffcdd2 !important;
@@ -365,9 +382,9 @@
       </select>
 
       <button onclick="generateAndRender()">เริ่มเกมใหม่</button>
-      <button onclick="checkAnswers()">ตรวจคำตอบ</button>
+      <!-- <button onclick="checkAnswers()">ตรวจคำตอบ</button> -->
       <button onclick="showSolution()">เฉลย</button>
-      <button onclick="showHint()">คำใบ้</button>
+      <!-- <button onclick="showHint()">คำใบ้</button> -->
     </div>
 
     <div id="scoreboard"></div>
@@ -846,7 +863,9 @@
 
     // กลับสู่เมนูหลัก
     function goBack() {
-        window.location.href = "index.html";
+      // if (confirm("คุณต้องการออกจากเกมนี้หรือไม่? ความคืบหน้าจะถูกบันทึกไว้")) {
+      window.location.href = "index.html";
+      // }
     }
 
     // เริ่มเกมเมื่อโหลดหน้า
