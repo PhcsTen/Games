@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🧩 เกมจิ๊กซอว์</title>
+  <title>🧩 เกมจิ๊กซอว์ (Responsive)</title>
   <style>
+    :root {
+      --puzzle-size: 90vw;     /* puzzle size responsive */
+      --grid: 4;
+      --gap: 2px;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       font-family: 'Prompt', sans-serif;
       background: linear-gradient(to bottom, #fff0f5, #ffe6f0);
       display: flex;
@@ -16,8 +21,51 @@
       align-items: center;
     }
 
+    h1 {
+      color: #d63384;
+      margin-top: 20px;
+    }
+
+    #timer {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    #preview {
+      width: calc(var(--puzzle-size) / 2);
+      height: calc(var(--puzzle-size) / 2);
+      object-fit: cover;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .puzzle-container {
+      width: var(--puzzle-size);
+      height: var(--puzzle-size);
+      position: relative;
+      background-color: #fff;
+      border: 3px solid #ff99cc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .piece {
+      width: calc(var(--puzzle-size) / var(--grid));
+      height: calc(var(--puzzle-size) / var(--grid));
+      position: absolute;
+      background-size: var(--puzzle-size) var(--puzzle-size);
+      background-repeat: no-repeat;
+      cursor: grab;
+      transition: left 0.1s, top 0.1s;
+    }
+
+    .piece:active {
+      cursor: grabbing;
+    }
+
     .btn-back {
-      margin: 15px;
+      margin: 20px;
       background-color: #ff99cc;
       border: none;
       color: white;
@@ -25,92 +73,58 @@
       border-radius: 25px;
       font-size: 1em;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     }
 
     .btn-back:hover {
       background-color: #ff66aa;
     }
 
-    h1 {
-      color: #d63384;
-      margin-bottom: 5px;
-    }
-
-    #preview {
-      width: 160px;
-      height: 160px;
-      object-fit: cover;
-      margin-bottom: 10px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .puzzle-container {
-      width: 320px;
-      height: 320px;
-      display: flex;
-      flex-wrap: wrap;
-      border: 3px solid #ff99cc;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-      background-color: white;
-      position: relative;
-    }
-
-    .piece {
-      width: 80px;
-      height: 80px;
-      background-size: 320px 320px;
-      background-repeat: no-repeat;
-      position: absolute;
-      cursor: grab;
-      box-sizing: border-box;
-    }
-
-    .piece:active {
-      cursor: grabbing;
-    }
-
     .footer {
-      margin: 10px;
       font-size: 0.9em;
       color: #888;
+      margin-bottom: 20px;
     }
 
-    #timer {
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
+    @media (min-width: 600px) {
+      :root {
+        --puzzle-size: 320px;
+      }
     }
   </style>
 </head>
 <body>
 
   <h1>🧩 เกมจิ๊กซอว์</h1>
-  <p>⏱️ เวลา: <span id="timer">00:00</span></p>
-  <img id="preview" src="" alt="ภาพตัวอย่าง">
+  <p id="timer">⏱️ เวลา: 00:00</p>
+  <img id="preview" alt="ภาพตัวอย่าง">
   <div class="puzzle-container" id="puzzle"></div>
-
   <button class="btn-back" onclick="goBack()">กลับเมนูหลัก</button>
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
 
   <script>
-    const puzzle = document.getElementById('puzzle');
-    const preview = document.getElementById('preview');
     const size = 4;
-    const pieceSize = 80;
-    let pieces = [];
-
+    const puzzle = document.getElementById("puzzle");
+    const preview = document.getElementById("preview");
+    const pieceSize = puzzle.clientWidth / size;
     let seconds = 0;
     let timerInterval = null;
+
+    const imageUrls = [
+      "https://picsum.photos/id/1011/320/320",
+      "https://picsum.photos/id/1025/320/320",
+      "https://picsum.photos/id/1033/320/320",
+      "https://picsum.photos/id/1043/320/320"
+    ];
+
+    const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    preview.src = randomImage;
 
     function startTimer() {
       timerInterval = setInterval(() => {
         seconds++;
         const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
         const secs = String(seconds % 60).padStart(2, '0');
-        document.getElementById('timer').textContent = `${mins}:${secs}`;
+        document.getElementById("timer").textContent = `⏱️ เวลา: ${mins}:${secs}`;
       }, 1000);
     }
 
@@ -118,31 +132,22 @@
       clearInterval(timerInterval);
     }
 
-    const imageUrls = [
-      "https://picsum.photos/id/1011/320/320",
-      "https://picsum.photos/id/1025/320/320",
-      "https://picsum.photos/id/1033/320/320",
-      "https://picsum.photos/id/1043/320/320",
-      "https://picsum.photos/id/1050/320/320",
-      "https://picsum.photos/id/1062/320/320",
-      "https://picsum.photos/id/1074/320/320",
-      "https://picsum.photos/id/1084/320/320",
-      "https://picsum.photos/id/1081/320/320",
-      "https://picsum.photos/id/1020/320/320"
-    ];
-
-    const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
-    preview.src = randomImage;
+    let pieces = [];
 
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        const piece = document.createElement('div');
-        piece.className = 'piece';
+        const piece = document.createElement("div");
+        piece.classList.add("piece");
         piece.style.backgroundImage = `url('${randomImage}')`;
         piece.style.backgroundPosition = `-${x * pieceSize}px -${y * pieceSize}px`;
         piece.dataset.index = y * size + x;
-        piece.style.left = `${Math.random() * (320 - pieceSize)}px`;
-        piece.style.top = `${Math.random() * (320 - pieceSize)}px`;
+
+        // วางแบบสุ่ม
+        const px = Math.random() * (puzzle.clientWidth - pieceSize);
+        const py = Math.random() * (puzzle.clientHeight - pieceSize);
+        piece.style.left = px + "px";
+        piece.style.top = py + "px";
+
         puzzle.appendChild(piece);
         pieces.push(piece);
         makeDraggable(piece);
@@ -154,29 +159,6 @@
     function makeDraggable(el) {
       let offsetX, offsetY, isDragging = false;
 
-      el.addEventListener('mousedown', e => {
-        isDragging = true;
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
-        el.style.zIndex = 1000;
-      });
-
-      document.addEventListener('mousemove', e => {
-        if (isDragging) {
-          const rect = puzzle.getBoundingClientRect();
-          el.style.left = `${e.clientX - rect.left - offsetX}px`;
-          el.style.top = `${e.clientY - rect.top - offsetY}px`;
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          el.style.zIndex = 1;
-          checkWin();
-        }
-      });
-
       el.addEventListener('touchstart', e => {
         isDragging = true;
         const touch = e.touches[0];
@@ -184,8 +166,7 @@
         offsetX = touch.clientX - rect.left;
         offsetY = touch.clientY - rect.top;
         el.style.zIndex = 1000;
-        e.preventDefault();
-      }, { passive: false });
+      }, { passive: true });
 
       document.addEventListener('touchmove', e => {
         if (isDragging) {
@@ -194,9 +175,32 @@
           el.style.left = `${touch.clientX - rect.left - offsetX}px`;
           el.style.top = `${touch.clientY - rect.top - offsetY}px`;
         }
-      }, { passive: false });
+      }, { passive: true });
 
       document.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          el.style.zIndex = 1;
+          checkWin();
+        }
+      });
+
+      el.addEventListener("mousedown", e => {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        el.style.zIndex = 1000;
+      });
+
+      document.addEventListener("mousemove", e => {
+        if (isDragging) {
+          const rect = puzzle.getBoundingClientRect();
+          el.style.left = `${e.clientX - rect.left - offsetX}px`;
+          el.style.top = `${e.clientY - rect.top - offsetY}px`;
+        }
+      });
+
+      document.addEventListener("mouseup", () => {
         if (isDragging) {
           isDragging = false;
           el.style.zIndex = 1;
@@ -211,11 +215,11 @@
         const index = parseInt(piece.dataset.index);
         const correctX = (index % size) * pieceSize;
         const correctY = Math.floor(index / size) * pieceSize;
-        const currentX = parseInt(piece.style.left);
-        const currentY = parseInt(piece.style.top);
+        const currentX = parseFloat(piece.style.left);
+        const currentY = parseFloat(piece.style.top);
         const dx = Math.abs(currentX - correctX);
         const dy = Math.abs(currentY - correctY);
-        if (dx <= 10 && dy <= 10) {
+        if (dx < pieceSize / 5 && dy < pieceSize / 5) {
           correct++;
         }
       });
@@ -225,8 +229,8 @@
         const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
         const secs = String(seconds % 60).padStart(2, '0');
         setTimeout(() => {
-          alert(`🎉 ชนะแล้ว! เก่งมาก!\nใช้เวลา ${mins}:${secs} นาที`);
-        }, 200);
+          alert(`🎉 เยี่ยมมาก! คุณจัดครบทุกชิ้นแล้วใน ${mins}:${secs}`);
+        }, 300);
       }
     }
 
