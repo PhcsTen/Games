@@ -147,11 +147,12 @@
       }
     }
 
-    startTimer(); // เริ่มนับเวลา
+    startTimer();
 
     function makeDraggable(el) {
       let offsetX, offsetY, isDragging = false;
 
+      // Mouse
       el.addEventListener('mousedown', e => {
         isDragging = true;
         offsetX = e.offsetX;
@@ -171,7 +172,35 @@
         if (isDragging) {
           isDragging = false;
           el.style.zIndex = 1;
-          checkWin(); // ตรวจตำแหน่งทุกครั้ง
+          checkWin();
+        }
+      });
+
+      // Touch
+      el.addEventListener('touchstart', e => {
+        isDragging = true;
+        const touch = e.touches[0];
+        const rect = el.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        el.style.zIndex = 1000;
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('touchmove', e => {
+        if (isDragging) {
+          const touch = e.touches[0];
+          const rect = puzzle.getBoundingClientRect();
+          el.style.left = `${touch.clientX - rect.left - offsetX}px`;
+          el.style.top = `${touch.clientY - rect.top - offsetY}px`;
+        }
+      }, { passive: false });
+
+      document.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          el.style.zIndex = 1;
+          checkWin();
         }
       });
     }
@@ -186,7 +215,6 @@
         const currentY = parseInt(piece.style.top);
         const dx = Math.abs(currentX - correctX);
         const dy = Math.abs(currentY - correctY);
-
         if (dx <= 10 && dy <= 10) {
           correct++;
         }
