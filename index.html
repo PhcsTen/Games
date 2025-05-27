@@ -1,87 +1,289 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>เกมเล่นแก้เครียด</title>
   <style>
     body {
-      font-family: 'Prompt', sans-serif;
-      background-color: #e7dbe1; /* สีขาว */
-      color: #1a1a1a; /* สีข้อความเข้ม */
-      text-align: center;
-      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
+      background-color: #dbb4c8;
+      font-family: 'Prompt', sans-serif;
+      overflow: hidden;
     }
 
-    h1 {
-      color: #4a2900; /* สีน้ำตาลเข้ม */
-      font-size: 2.5em;
-      margin-bottom: 10px;
+    .menu-container {
+      position: relative;
+      width: 90vw;
+      max-width: 600px;
+      height: 90vw;
+      max-height: 600px;
     }
 
-    h2 {
-      color: #333333; /* สีเทาเข้ม */
-      font-size: 1.2em;
-      margin-bottom: 30px;
+    .center-circle {
+      position: absolute;
+      width: 25vw;
+      height: 25vw;
+      max-width: 150px;
+      max-height: 150px;
+      background: #df7ada;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      cursor: grab;
+      animation: pulse 2s infinite;
     }
 
-    .game-button {
-      display: block;
-      background-color: #663300; /* สีน้ำตาลเข้ม */
-      color: #fff4cc; /* สีอ่อนตัดกับพื้น */
-      padding: 15px 20px;
-      margin: 15px auto;
-      border-radius: 20px;
-      font-size: 1.2em;
+    @keyframes pulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .center-text {
+      font-weight: bold;
+      color: #fff;
+      font-size: 3vw;
+      text-align: center;
+    }
+
+    .menu-items {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transition: transform 0.8s cubic-bezier(0.17, 0.67, 0.21, 0.99);
+    }
+
+    .menu-item {
+      position: absolute;
+      width: 18vw;
+      height: 18vw;
+      max-width: 120px;
+      max-height: 120px;
+      background: #e9b2e7;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 3vw;
+      padding: 5px;
+      box-sizing: border-box;
       text-decoration: none;
-      transition: 0.3s;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      max-width: 300px;
+      color: #333;
     }
 
-    .game-button:hover {
-      background-color: #996633; /* น้ำตาลทอง */
-      transform: scale(1.05);
+    .menu-item:hover {
+      transform: scale(1.1) !important;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 20;
+      background: #f8c6f5;
     }
 
-    .footer {
-      margin-top: 50px;
-      font-size: 0.9em;
-      color: #4d4d4d;
+    .menu-item-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.8em;
-      }
-      h2 {
-        font-size: 1em;
-      }
-      .game-button {
-        font-size: 1em;
-        padding: 12px 16px;
-      }
+    .menu-item-content .icon {
+      font-size: 4vw;
+      line-height: 1;
+    }
+
+    .menu-item-content .title {
+      margin-top: 5px;
+    }
+
+    .top-menu, .instructions {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 3vw;
+      max-width: 90%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .top-menu {
+      top: 20px;
+    }
+
+    .instructions {
+      bottom: 20px;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>🎮 เกมเล่นแก้เครียด</h1>
-  <h2>😄 มาเล่นกัน! 🎉</h2>
+  <div class="top-menu">
+    😄 มาเล่นกัน! 🎉
+  </div>
 
-  <a class="game-button" href="bomb.html" >💣 เกมวางระเบิด</a>
-  <a class="game-button" href="to_match.html" >🧠 เกมจับคู่</a>
-  <a class="game-button" href="questions.html" >📝 เกมสุภาษิตไทย</a>
-  <a class="game-button" href="Jigsaw.html" >🧩 เกมต่อจิ๊กซอว์</a>
-  <a class="game-button" href="snakes.html" >🪜🐍 เกมบันไดงู</a>
-  <a class="game-button" href="sudoku.html">🔢 ซูโดกุ (Sudoku)</a>
-  <a class="game-button" href="puzzle.html">🧠 15 เรียงเลข (Puzzle)</a>
-  <a class="game-button" href="mario.html">🎮 Super Mario </a>
- 
-  <div class="footer">
+  <div class="menu-container">
+    <div class="center-circle" id="centerCircle">
+      <div class="center-text">เกมเล่น<br>แก้เครียด</div>
+    </div>
+    <div class="menu-items" id="menuItems"></div>
+  </div>
+
+  <div class="instructions">
     © 2025 | ทำเล่นๆ แต่จริงจัง 💻
   </div>
 
+  <script>
+    const menuData = [
+      { icon: "💣", title: "เกมวางระเบิด", link: "bomb.html" },
+      { icon: "🧠", title: "เกมจับคู่", link: "to_match.html" },
+      { icon: "📝", title: "เกมสุภาษิตไทย", link: "questions.html" },
+      { icon: "🧩", title: "เกมต่อจิ๊กซอว์", link: "Jigsaw.html" },
+      { icon: "🪜🐍", title: "เกมบันไดงู", link: "snakes.html" },
+      { icon: "🔢", title: "ซูโดกุ (Sudoku)", link: "sudoku.html" },
+      { icon: "🧠", title: "15 เรียงเลข (Puzzle)", link: "puzzle.html" },
+      { icon: "🎮", title: "Super Mario", link: "mario.html" },
+    ];
+
+    const menuItems = document.getElementById('menuItems');
+    const centerCircle = document.getElementById('centerCircle');
+
+    let currentAngle = 0;
+    let container = document.querySelector('.menu-container');
+    let centerX = container.offsetWidth / 2;
+    let centerY = container.offsetHeight / 2;
+    let radius = container.offsetWidth * 0.33;
+
+    function createMenuItems() {
+      menuItems.innerHTML = '';
+      menuData.forEach((item, index) => {
+        const angle = (index * (360 / menuData.length)) * (Math.PI / 180);
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        const menuItem = document.createElement('a');
+        menuItem.className = 'menu-item';
+        menuItem.href = item.link;
+        menuItem.target = "_blank";
+        menuItem.style.left = `${x - container.offsetWidth * 0.075}px`;
+        menuItem.style.top = `${y - container.offsetWidth * 0.075}px`;
+        menuItem.innerHTML = `
+          <div class="menu-item-content">
+            <div class="icon">${item.icon}</div>
+            <div class="title">${item.title}</div>
+          </div>
+        `;
+        menuItems.appendChild(menuItem);
+      });
+    }
+
+    function rotateMenu(angle) {
+      currentAngle = angle;
+      menuItems.style.transform = `rotate(${currentAngle}deg)`;
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.style.transform = `rotate(${-currentAngle}deg)`;
+      });
+    }
+
+    let isDragging = false, startAngle = 0, startX = 0, velocity = 0, lastTime = 0, animationId = null;
+
+    centerCircle.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startAngle = currentAngle;
+      centerCircle.style.cursor = 'grabbing';
+      if (animationId) cancelAnimationFrame(animationId);
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - startX;
+      const angleDelta = deltaX * 0.5;
+      const now = Date.now();
+      const deltaTime = now - lastTime;
+      if (deltaTime > 0) velocity = (angleDelta - (currentAngle - startAngle)) / deltaTime;
+      lastTime = now;
+      rotateMenu(startAngle + angleDelta);
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      centerCircle.style.cursor = 'grab';
+      if (Math.abs(velocity) > 0.1) applyMomentum(velocity);
+    });
+
+    function applyMomentum(initialVelocity) {
+      let decay = 0.95;
+      let velocity = initialVelocity;
+      let angle = currentAngle;
+      const animate = () => {
+        if (Math.abs(velocity) < 0.1) return;
+        velocity *= decay;
+        angle += velocity * 16;
+        rotateMenu(angle);
+        animationId = requestAnimationFrame(animate);
+      };
+      animate();
+    }
+
+    function autoRotate() {
+      let angle = 0;
+      const duration = 10000;
+      const startTime = Date.now();
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        angle = 360 * easeOutQuad(progress);
+        rotateMenu(angle);
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      animate();
+    }
+
+    function easeOutQuad(t) {
+      return t * (2 - t);
+    }
+
+    window.addEventListener('load', () => {
+      createMenuItems();
+      autoRotate();
+    });
+
+    window.addEventListener('resize', () => {
+      centerX = container.offsetWidth / 2;
+      centerY = container.offsetHeight / 2;
+      radius = container.offsetWidth * 0.33;
+      createMenuItems();
+    });
+  </script>
 </body>
+
 </html>
