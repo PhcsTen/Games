@@ -371,7 +371,7 @@
 
 <body>
   <div class="game-container">
-    <h2>เกมซูโดกุ (Sudoku)</h2>
+    <h2>🔢 เกมซูโดกุ (Sudoku)</h2>
 
     <div class="controls">
       <select id="difficulty" onchange="generateAndRender()">
@@ -382,9 +382,7 @@
       </select>
 
       <button onclick="generateAndRender()">เริ่มเกมใหม่</button>
-      <!-- <button onclick="checkAnswers()">ตรวจคำตอบ</button> -->
       <button onclick="showSolution()">เฉลย</button>
-      <!-- <button onclick="showHint()">คำใบ้</button> -->
     </div>
 
     <div id="scoreboard"></div>
@@ -703,38 +701,6 @@
       document.body.appendChild(congratsDiv);
     }
 
-    // ตรวจคำตอบ
-    function checkAnswers() {
-      if (gameCompleted) return;
-
-      const inputs = document.querySelectorAll('input');
-      let correct = 0;
-
-      inputs.forEach(input => {
-        const row = parseInt(input.dataset.row);
-        const col = parseInt(input.dataset.col);
-        const val = input.value;
-        input.classList.remove("correct", "wrong");
-
-        if (val) {
-          if (parseInt(val) === fullBoard[row][col]) {
-            input.classList.add("correct");
-            correct++;
-          } else {
-            input.classList.add("wrong");
-          }
-        }
-      });
-
-      document.getElementById('score').textContent = correct;
-
-      if (correct === inputs.length) {
-        gameCompleted = true;
-        clearInterval(interval);
-        showCongrats();
-      }
-    }
-
     // แสดงเฉลย
     function showSolution() {
       if (gameCompleted) return;
@@ -749,28 +715,6 @@
 
       gameCompleted = true;
       clearInterval(interval);
-    }
-
-    // แสดงคำใบ้
-    function showHint() {
-      if (!selectedInput || gameCompleted) {
-        alert("กรุณาเลือกเซลล์ที่ต้องการคำใบ้");
-        return;
-      }
-
-      const row = parseInt(selectedInput.dataset.row);
-      const col = parseInt(selectedInput.dataset.col);
-
-      if (selectedInput.value && parseInt(selectedInput.value) === fullBoard[row][col]) {
-        alert("เซลล์นี้ถูกต้องแล้ว!");
-        return;
-      }
-
-      selectedInput.value = fullBoard[row][col];
-      selectedInput.classList.remove("wrong");
-      selectedInput.classList.add("solution");
-      saveGame();
-      checkCompletion();
     }
 
     // ปรับขนาดตารางให้เหมาะสม
@@ -802,8 +746,7 @@
       const level = document.getElementById('difficulty').selectedOptions[0].text;
       document.getElementById('scoreboard').innerHTML = `
         ระดับ: ${level} | 
-        ⏱️ เวลา: <span id="timer">0:00</span> | 
-        ✅ คะแนน: <span id="score">0</span> / 81
+        ⏱️ เวลา: <span id="timer">0:00</span>
       `;
     }
 
