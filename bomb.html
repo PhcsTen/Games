@@ -153,21 +153,22 @@
   <h1>💣 เกมวางระเบิด</h1>
 
   <div class="button-container">
-    <label for="difficulty">เลือกระดับ: </label>
+    <label for="difficulty">ระดับ: </label>
     <select id="difficulty" onchange="resetGame()">
       <option value="easy"selected>ง่าย</option>
       <option value="medium">ปานกลาง</option>
       <option value="hard">ยาก</option>
     </select>
+    <button class="btn-back" onclick="restartGame()">เริ่มเกมใหม่</button>
   </div>
-
+  
   <div class="board-container">
     <div class="board" id="board"></div>
   </div>
 
   <!-- ปุ่มกลับเมนูหลัก -->
   <div class="center-button">
-    <a href="index.html" class="game-button">กลับเมนูหลัก</a>
+    <a href="index.html" class="game-button">← กลับเมนูหลัก</a>
   </div>
 
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
@@ -302,6 +303,10 @@
     function showPopup(message) {
       popupMessage.textContent = message;
       popupOverlay.style.display = 'flex';
+    }
+
+    function restartGame() {
+      location.reload(); // โหลดหน้าใหม่เพื่อเริ่มเกมใหม่
     }
 
     window.onload = () => {
