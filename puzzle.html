@@ -2,8 +2,8 @@
 <html lang="th">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>📦 15 Puzzle</title>
     <style>
@@ -83,6 +83,9 @@
 
     <h1>📦 เกม 15 Puzzle</h1>
     <p>⏱️ เวลา: <span id="timer">00:00</span></p>
+    <div class="controls">
+        <button class="btn-back" onclick="restartGame()">เริ่มเกมใหม่</button>
+    </div>
     <div class="board" id="board"></div>
 
     <script>
@@ -103,8 +106,8 @@
         }
 
         function stopTimer() {
-      clearInterval(timerInterval);
-    }
+            clearInterval(timerInterval);
+        }
 
 
         // สร้างอาร์เรย์เลข 1-15 และช่องว่าง
@@ -182,6 +185,11 @@
         startTimer(); // เริ่มนับเวลา
 
         initGame();
+
+
+        function restartGame() {
+            location.reload(); // โหลดหน้าใหม่เพื่อเริ่มเกมใหม่
+        }
 
         function goBack() {
             window.location.href = "index.html";
