@@ -48,8 +48,8 @@
     }
 
     #preview {
-      width: calc(var(--puzzle-size) / 2);
-      height: calc(var(--puzzle-size) / 2);
+      width: calc(var(--puzzle-size) / 3.5);
+      height: calc(var(--puzzle-size) / 3.5);
       object-fit: cover;
       border: 2px solid #ccc;
       border-radius: 10px;
@@ -83,7 +83,7 @@
       margin: 20px;
       background-color: #ff99cc;
       border: none;
-      color: white;
+      color: black;
       padding: 10px 25px;
       border-radius: 25px;
       font-size: 1em;
@@ -122,11 +122,12 @@
   <div class="controls">
     <p id="timer">⏱️ เวลา: 00:00</p>
     <button class="btn-back" onclick="restartGame()">เริ่มเกมใหม่</button>
+    <button class="btn-back" onclick="goBack()">กลับเมนูหลัก</button>
   </div>
 
   <img id="preview" alt="ภาพตัวอย่าง">
   <div class="puzzle-container" id="puzzle"></div>
-  <button class="btn-back" onclick="goBack()">กลับเมนูหลัก</button>
+  <br>
   <div class="footer">© 2025 | เล่นคลายง่วงด้วยกันนะ!</div>
 
   <script>
