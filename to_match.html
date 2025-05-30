@@ -2,8 +2,8 @@
 <html lang="th">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>เกมจับคู่แก้ง่วง</title>
   <style>
     body {
@@ -20,29 +20,40 @@
     #timer {
       font-size: 1.5em;
       color: #333;
-      margin-top: 10px;
+      margin: 10px 0;
+    }
+
+    .controls {
+      margin: 10px 0;
+    }
+
+    .controls select {
+      padding: 8px 15px;
+      font-size: 1em;
+      border-radius: 10px;
+      border: none;
     }
 
     .game-board {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      grid-gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      grid-gap: 10px;
       justify-content: center;
       margin-top: 20px;
-      max-width: 800px;
+      max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .card {
       background-color: #ffb6c1;
-      width: 100px;
-      height: 100px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
       border-radius: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2.5em;
+      font-size: 2em;
       cursor: pointer;
       transition: transform 0.3s;
     }
@@ -82,15 +93,11 @@
 
     @media (max-width: 480px) {
       .card {
-        width: 70px;
-        height: 70px;
-        font-size: 1.5em;
+        font-size: 1.2em;
       }
 
       .game-board {
-        max-width: 340px;
-        grid-gap: 10px;
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+        grid-gap: 8px;
       }
     }
   </style>
@@ -99,7 +106,17 @@
 <body>
 
   <h1>🧠 เกมจับคู่แก้ง่วง</h1>
-  <div id="timer">⏳ เหลือเวลา: 2:00</div>
+
+  <div class="controls">
+    <label for="difficulty">เลือกระดับความยาก: </label>
+    <select id="difficulty" onchange="startGame()">
+      <option value="easy">ง่าย</option>
+      <option value="medium" selected>ปานกลาง</option>
+      <option value="hard">ยาก</option>
+    </select>
+  </div>
+
+  <div id="timer">⏳ เหลือเวลา: -</div>
 
   <div class="game-board" id="gameBoard"></div>
 
@@ -110,69 +127,101 @@
   </div>
 
   <script>
-    const baseEmojis = ['🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥', '🍒', '🍏', '🥭', '🥑', '🥕'];
-    const emojis = [...baseEmojis, ...baseEmojis];
-    let shuffled = emojis.sort(() => 0.5 - Math.random());
+    const baseEmojis = [
+      '🍓', '🍇', '🍉', '🍋', '🍍', '🥝', '🍎', '🍊', '🍌', '🥥',
+      '🍒', '🍏', '🥭', '🥑', '🥕', '🍈', '🫐', '🌽', '🍠', '🍆',
+      '🥔', '🥒', '🌶️', '🥬', '🍄', '🥜', '🌰', '🧄', '🧅', '🧽',
+      '🧀', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🌮', '🍣'
+    ]; // 40 emojis+
 
-    const board = document.getElementById('gameBoard');
-    let flippedCards = [];
-    let matchedCount = 0;
+    let countdown;
+    let totalTime;
+    let emojis = [];
 
-    shuffled.forEach((emoji, index) => {
-      const card = document.createElement('div');
-      card.classList.add('card');
-      card.dataset.index = index;
-      card.dataset.emoji = emoji;
-      card.innerHTML = '';
-      card.addEventListener('click', () => flipCard(card));
-      board.appendChild(card);
-    });
+    function startGame() {
+      clearInterval(countdown);
 
-    function flipCard(card) {
-      if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
-      card.classList.add('flipped');
-      card.innerHTML = card.dataset.emoji;
-      flippedCards.push(card);
+      const board = document.getElementById('gameBoard');
+      const difficulty = document.getElementById('difficulty').value;
+      let pairCount;
 
-      if (flippedCards.length === 2) {
-        const [card1, card2] = flippedCards;
-        if (card1.dataset.emoji === card2.dataset.emoji) {
-          card1.classList.add('matched');
-          card2.classList.add('matched');
-          matchedCount += 2;
-
-          if (matchedCount === emojis.length) {
-            clearInterval(countdown); // หยุดจับเวลาเมื่อชนะ
-            setTimeout(() => alert("🎉 ชนะแล้ว! สุดยอดเลย!"), 300);
-          }
-        } else {
-          setTimeout(() => {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
-            card1.innerHTML = '';
-            card2.innerHTML = '';
-          }, 800);
-        }
-        flippedCards = [];
+      switch (difficulty) {
+        case 'easy':
+          pairCount = 15;
+          totalTime = 120;
+          break;
+        case 'medium':
+          pairCount = 20;
+          totalTime = 150;
+          break;
+        case 'hard':
+          pairCount = 30;
+          totalTime = 180;
+          break;
       }
+
+      board.innerHTML = '';
+      emojis = [...baseEmojis.slice(0, pairCount), ...baseEmojis.slice(0, pairCount)];
+      const shuffled = emojis.sort(() => 0.5 - Math.random());
+
+      let flippedCards = [];
+      let matchedCount = 0;
+
+      shuffled.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.index = index;
+        card.dataset.emoji = emoji;
+        card.innerHTML = '';
+        card.addEventListener('click', () => flipCard(card));
+        board.appendChild(card);
+      });
+
+      function flipCard(card) {
+        if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
+        card.classList.add('flipped');
+        card.innerHTML = card.dataset.emoji;
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+          const [card1, card2] = flippedCards;
+          if (card1.dataset.emoji === card2.dataset.emoji) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedCount += 2;
+
+            if (matchedCount === emojis.length) {
+              clearInterval(countdown);
+              setTimeout(() => alert("🎉 ชนะแล้ว! สุดยอดเลย!"), 300);
+            }
+          } else {
+            setTimeout(() => {
+              card1.classList.remove('flipped');
+              card2.classList.remove('flipped');
+              card1.innerHTML = '';
+              card2.innerHTML = '';
+            }, 800);
+          }
+          flippedCards = [];
+        }
+      }
+
+      const timerDisplay = document.getElementById('timer');
+      countdown = setInterval(() => {
+        const minutes = Math.floor(totalTime / 60);
+        const seconds = totalTime % 60;
+        timerDisplay.textContent = `⏳ เหลือเวลา: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        totalTime--;
+
+        if (totalTime < 0) {
+          clearInterval(countdown);
+          alert("⏰ หมดเวลา! ลองใหม่อีกครั้งนะ");
+          location.reload();
+        }
+      }, 1000);
     }
 
-    // จับเวลาถอยหลัง 2 นาที
-    let totalTime = 120;
-    const timerDisplay = document.getElementById('timer');
-
-    const countdown = setInterval(() => {
-      const minutes = Math.floor(totalTime / 60);
-      const seconds = totalTime % 60;
-      timerDisplay.textContent = `⏳ เหลือเวลา: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-      totalTime--;
-
-      if (totalTime < 0) {
-        clearInterval(countdown);
-        alert("⏰ หมดเวลา! ลองใหม่อีกครั้งนะ");
-        location.reload(); // หรือใช้ window.location.href = 'index.html';
-      }
-    }, 1000);
+    window.onload = startGame;
   </script>
 
 </body>
